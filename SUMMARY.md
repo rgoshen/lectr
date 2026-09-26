@@ -1,5 +1,27 @@
 # Summary
 
+## [2026-09-26 17:45] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan, design spec
+
+**Summary:**
+Fold the adversarial review (A1–A20) into the plan. Long chapters now split into equal-sized
+parts titled "Part i of n" (A8, refining G1 as the user directed).
+
+**Rationale:**
+A separate Opus reviewer attacked the plan with real probes. Before release it would have broken
+CI (nonexistent setup-uv tag), the Homebrew formula on Intel Macs and macOS 13, and the tap push.
+It also found common real-world books handled badly: Gutenberg-style EPUBs, nested PDF outlines,
+and lopsided part sizes. The user kept A's split rule (any chapter over ~5,000 words) instead of
+the reviewer's split-only-structureless-books proposal, and asked for balanced part sizes.
+Every fix was implemented and tested in scratch first, then ported into the plan. Rebuilding
+from the plan alone gives 121 passing tests, 95% coverage, and clean ruff and mypy.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog A1–A20)
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md §12 (Intel Macs row)
+
 ## [2026-09-26 17:10] Commit Summary
 
 **Change Type:** Docs
