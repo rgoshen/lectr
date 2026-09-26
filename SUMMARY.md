@@ -1,5 +1,20 @@
 # Summary
 
+## [2026-09-26 17:10] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan
+
+**Summary:**
+Finalize G1: chapters over 5,000 words are split into `Title (i/n)` segments (option A).
+
+**Rationale:**
+The user chose A over streaming synthesis (B) and rejecting long chapters (C). A bounds memory,
+keeps resume granular, and adds navigation to chapterless books with the least code.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog, G1)
+
 ## [2026-09-26 16:55] Commit Summary
 
 **Change Type:** Docs
