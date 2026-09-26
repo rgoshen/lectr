@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-09-26 15:40] Commit Summary
+
+**Change Type:** Docs
+**Scope:** README, design spec
+
+**Summary:**
+Replace the `<owner>` placeholder with `rgoshen`, so the Homebrew tap is `rgoshen/homebrew-tap`
+and the install command is `brew install rgoshen/tap/lectr`.
+
+**Rationale:**
+The user confirmed `rgoshen` as the owning GitHub account. The `lectr` name is unclaimed on PyPI,
+and neither `rgoshen/lectr` nor `rgoshen/homebrew-tap` exists yet.
+
+**References:**
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+
 ## [2026-09-26 15:35] Commit Summary
 
 **Change Type:** Docs

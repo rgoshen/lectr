@@ -16,7 +16,7 @@ with a package manager on macOS, Linux, or Windows.
   cover, and title/author metadata.
 - Runs on an ordinary laptop CPU (no GPU required).
 - An interrupted conversion resumes from the last completed chapter.
-- Installable via `uv tool install lectr` (all OSes) and `brew install <owner>/tap/lectr`
+- Installable via `uv tool install lectr` (all OSes) and `brew install rgoshen/tap/lectr`
   (macOS, Linux).
 
 ### Decisions (agreed during brainstorming)
@@ -282,7 +282,7 @@ TDD throughout. Default test run needs neither the model nor the network.
   platforms (verify during planning).
 - **PyPI:** `uv build` + `uv publish` from GitHub Actions on `v*` tags using trusted publishing (no
   stored token). Users: `uv tool install lectr`.
-- **Homebrew:** separate repo `<owner>/homebrew-tap`, `Formula/lectr.rb` with `depends_on`
+- **Homebrew:** separate repo `rgoshen/homebrew-tap`, `Formula/lectr.rb` with `depends_on`
   `ffmpeg`, `python@3.x`, and `espeak-ng` if needed. `onnxruntime` has no sdist, so the formula
   installs published wheels into a private virtualenv; confirm the approved pattern from current
   Homebrew docs. Release workflow opens a PR bumping `url`/`sha256`; human merges.

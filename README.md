@@ -16,7 +16,7 @@ services, no API keys, no GPU required.
 **macOS / Linux (Homebrew)** — installs ffmpeg and espeak-ng for you:
 
 ```bash
-brew install <owner>/tap/lectr
+brew install rgoshen/tap/lectr
 ```
 
 **Any OS (uv)** — install [uv](https://docs.astral.sh/uv/), then:
