@@ -1,5 +1,23 @@
 # Summary
 
+## [2026-09-26 16:55] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan
+
+**Summary:**
+Revise the lectr v1 plan after a spec-gap audit: gaps G1–G7 closed. G1 (segmenting books that
+have no chapter markers) is marked PROVISIONAL pending the user's decision.
+
+**Rationale:**
+The audit ran every code block in the plan in a scratch project instead of reviewing it by eye.
+It found ruff and mypy gate failures (G2, G3) that would have stalled implementation, and a
+memory/WAV-size failure for chapterless books (G1), confirmed in the kokoro-onnx source.
+After the fixes: 107 tests pass, 95% coverage, and ruff and mypy are clean.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog)
+
 ## [2026-09-26 16:20] Commit Summary
 
 **Change Type:** Docs
