@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-09-26 17:55] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan (Task 1)
+
+**Summary:**
+Created local `main` and `develop` branches. Task 1 now fast-forwards `develop` to the design
+work before branching, and appends `*.partial` to the existing `.gitignore` instead of replacing it.
+
+**Rationale:**
+The user asked for a `main` branch and committed a comprehensive `.gitignore`. The old Task 1
+steps would have failed on `git branch main` and overwritten that file.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Task 1)
+
 ## [2026-09-26 17:45] Commit Summary
 
 **Change Type:** Docs
