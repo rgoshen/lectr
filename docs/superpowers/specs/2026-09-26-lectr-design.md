@@ -310,3 +310,22 @@ with flag precedence.
 | Long synthesis time on slow CPUs | Resume cache; per-chapter progress; measure and document real throughput |
 | Player limits on long M4B | 12 h default split, well under the ~49.7 h 32-bit sample limit at 24 kHz |
 | Model hosting URL changes | Pinned URL + hash; `--model-dir` for manual placement |
+
+## 12. Planning verification results (2026-09-26)
+
+Resolved "to verify" items; these amend the sections above.
+
+| Item | Finding | Effect |
+|---|---|---|
+| espeak-ng | `kokoro-onnx` 0.6.1 depends on `espeakng-loader`, which ships the espeak-ng library and data in its wheels (macOS, Linux, Windows) | No system espeak-ng install; not a Homebrew dependency |
+| Long input | `kokoro-onnx` splits input into ≤510-phoneme batches at sentence/clause/word boundaries | lectr passes whole chapters; no own chunking |
+| Default voice | `af_heart` present; voices file has 54 voices, 28 English (`af_`, `am_`, `bf_`, `bm_`) | Voice validation uses the 28 English voices; `b*` voices use `lang="en-gb"` |
+| Model files | GitHub release `model-files-v1.1` digests: `kokoro-v1.0.onnx` sha256 `beb0d184…df3a`, `voices-v1.0.bin` sha256 `bca610b8…bf7d` (voices hash confirmed by download) | Pinned in `tts.py` |
+| Python range | `kokoro-onnx` requires `>=3.10,<3.14`; `onnxruntime` 1.30 wheels exist for 3.11–3.14 on macOS arm64 (≥14), Linux x86_64/aarch64, Windows amd64/arm64 | `requires-python = ">=3.11,<3.14"` |
+| Intel Macs | Last `onnxruntime` with macOS x86_64 wheels is 1.23.2 | Works because installs resolve on the user's machine; no `onnxruntime` lower bound above 1.23.2; not covered by CI |
+| `mobi` API | `mobi.extract(path) -> (tempdir, path)`; path is `mobi8/*.epub` (KF8/AZW3), `mobi7/book.html` (old MOBI, with `content.opf` + `toc.ncx`), or a PDF; encrypted books raise an exception whose message contains "encrypted" | AZW3 reuses the EPUB reader; old MOBI splits `book.html` at the NCX `filepos` anchors |
+| PDF encryption | Owner-password-only AES PDFs open with an empty password only when `cryptography` is installed | Dependency is `pypdf[crypto]`; user-password PDFs are rejected as protected |
+| ffmpeg | M4B: concat WAVs + FFMETADATA + attached JPEG verified with ffprobe on ffmpeg 9.0.2 (chapters, `=`/`;` escaping, tags, cover); MP3: `libmp3lame` + ID3v2.3 tags + attached cover verified | Exact arguments in the plan |
+| Homebrew | Homebrew's Python helper forces source builds (`--no-binary :all:`), which fails for wheel-only `onnxruntime` | Tap formula creates a venv with uv and installs pinned requirements; verified manually before first release |
+
+Structural refinement: `readers.py` becomes a `readers/` package (one module per format) and shared errors live in `errors.py`, to keep files small.

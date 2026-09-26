@@ -1,5 +1,29 @@
 # Summary
 
+## [2026-09-26 16:20] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Design spec, implementation plan
+
+**Summary:**
+Add the lectr v1 implementation plan (16 TDD tasks) and record the planning verification results
+in spec §12.
+
+**Rationale:**
+Every to-verify item was checked against real artifacts instead of memory:
+- kokoro-onnx 0.6.1 source: espeak-ng is bundled and long input is batched.
+- voices-v1.0.bin: downloaded, hash verified, voices listed.
+- GitHub release digests: model file hashes.
+- onnxruntime wheel matrix: Python 3.11–3.13; no Intel-Mac wheels after 1.23.2.
+- mobi: tested on Calibre-generated MOBI/AZW3 fixtures.
+- pypdf: encrypted-PDF behavior (needs `cryptography`).
+- ffmpeg 9.0.2: M4B/MP3 arguments checked with ffprobe.
+- Homebrew: forces source builds, so the tap formula uses uv.
+
+**References:**
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md
+
 ## [2026-09-26 15:40] Commit Summary
 
 **Change Type:** Docs
