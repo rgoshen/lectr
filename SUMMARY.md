@@ -1,5 +1,23 @@
 # Summary
 
+## [2026-09-26 15:35] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Project docs
+
+**Summary:**
+Add README.md, CONTRIBUTING.md, and LICENSE.md (GPL-3.0).
+
+**Rationale:**
+Adapted from the README and CONTRIBUTING templates to the agreed design: uv and Homebrew
+install paths, per-OS prerequisites, CLI usage, YAML config and wizard, GitFlow, TDD, and
+Conventional Commits. LICENSE.md is the official GPL-3.0 Markdown text from gnu.org instead of
+the MIT template, because bundling the GPL-3.0 `mobi` library requires GPL-3.0. The README marks
+the project as unreleased, since the commands describe the planned v1.
+
+**References:**
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+
 ## [2026-09-26 15:05] Commit Summary
 
 **Change Type:** Docs
