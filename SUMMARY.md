@@ -1,5 +1,41 @@
 # Summary
 
+## [2026-09-27 16:10] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan (Task 1)
+
+**Summary:**
+Task 1 Step 1 now brings the design work into `develop` by merging PR #1, not by fast-forwarding
+locally. It pulls `develop` and uses `git merge-base --is-ancestor` to confirm the design work
+landed before creating `feature/lectr-v1`.
+
+**Rationale:**
+Review asked for an ancestry check before `git merge --ff-only`. The fast-forward worked today
+(`develop` sat at the base of `feature/design-spec`), but PR #1 now targets `develop`, so a local
+merge would bypass the PR and commit directly to `develop`. If GitHub merges the PR with a merge
+commit, the design tip is still an ancestor of `develop`, so the check holds either way.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Task 1, Step 1)
+- PR: rgoshen/lectr#1
+
+## [2026-09-26 17:55] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan (Task 1)
+
+**Summary:**
+Created local `main` and `develop` branches. Task 1 now fast-forwards `develop` to the design
+work before branching, and appends `*.partial` to the existing `.gitignore` instead of replacing it.
+
+**Rationale:**
+The user asked for a `main` branch and committed a comprehensive `.gitignore`. The old Task 1
+steps would have failed on `git branch main` and overwritten that file.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Task 1)
+
 ## [2026-09-26 17:45] Commit Summary
 
 **Change Type:** Docs
