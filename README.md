@@ -27,6 +27,9 @@ uv tool install lectr
 
 ### Prerequisites (uv installs only)
 
+lectr needs Python 3.13, which uv installs automatically. On macOS it needs Apple Silicon and
+macOS 14 or later; Intel Macs are not supported.
+
 | Tool | macOS | Linux (Debian/Ubuntu) | Windows |
 |---|---|---|---|
 | ffmpeg | `brew install ffmpeg` | `sudo apt install ffmpeg` | `winget install ffmpeg` |
