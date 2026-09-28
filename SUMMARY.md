@@ -1,5 +1,30 @@
 # Summary
 
+## [2026-09-27 18:30] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan, design spec, README, CLAUDE.md (Python version)
+
+**Summary:**
+Python moves from 3.14 to 3.13 only (`>=3.13,<3.14`, classifier, ruff `py313`, CI matrix,
+lock-check runner, Homebrew `python@3.13`). Intel Macs stay unsupported, with the reason
+corrected: onnxruntime 1.30 has no Intel Mac wheels at all, not only for 3.14. Spec §12, ADR-001,
+the TODO risks, README, CLAUDE.md and plan changelog V1 updated.
+
+**Rationale:**
+The latest kokoro-onnx, 0.6.1, declares `requires-python <3.14`
+(https://github.com/thewh1teagle/kokoro-onnx/blob/main/pyproject.toml#L9), so it does not
+support 3.14; the previous commit relied on uv ignoring that bound. The user authorized
+downgrading Python to 3.13. Supporting Intel Macs would need onnxruntime 1.23.2, an older release
+that was not authorized. Verified: the plan's pyproject.toml locks to `==3.13.*`, syncs and
+imports on 3.13.8, and all 37 locked packages match their latest PyPI release.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Tasks 1, 14-16; changelog V1)
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md (§12)
+- https://github.com/thewh1teagle/kokoro-onnx/issues/187
+- https://pypi.org/project/onnxruntime/1.30.0/#files
+
 ## [2026-09-27 18:17] Commit Summary
 
 **Change Type:** Docs
