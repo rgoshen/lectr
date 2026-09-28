@@ -23,7 +23,7 @@ with a package manager on macOS, Linux, or Windows.
 
 | Topic | Decision |
 |---|---|
-| Platforms | macOS, Linux, Windows |
+| Platforms | macOS (Apple Silicon, 14+), Linux, Windows |
 | Distribution | PyPI (installed with `uv tool install`) + own Homebrew tap. Windows via PyPI only. |
 | Tooling | uv for everything (init, deps, run, build, publish). No pip in docs or workflows. |
 | TTS | Kokoro-82M via `kokoro-onnx`, English only for v1. Synthesis isolated in one module; no engine plugin system. |
@@ -321,8 +321,8 @@ Resolved "to verify" items; these amend the sections above.
 | Long input | `kokoro-onnx` splits input into ≤510-phoneme batches at sentence/clause/word boundaries | lectr passes whole chapters; no own chunking |
 | Default voice | `af_heart` present; voices file has 54 voices, 28 English (`af_`, `am_`, `bf_`, `bm_`) | Voice validation uses the 28 English voices; `b*` voices use `lang="en-gb"` |
 | Model files | GitHub release `model-files-v1.1` digests: `kokoro-v1.0.onnx` sha256 `beb0d184…df3a`, `voices-v1.0.bin` sha256 `bca610b8…bf7d` (voices hash confirmed by download) | Pinned in `tts.py` |
-| Python range | `kokoro-onnx` requires `>=3.10,<3.14`; `onnxruntime` 1.30 wheels exist for 3.11–3.14 on macOS arm64 (≥14), Linux x86_64/aarch64, Windows amd64/arm64 | `requires-python = ">=3.11,<3.14"` |
-| Intel Macs | Last `onnxruntime` with macOS x86_64 wheels is 1.23.2; 1.30 Apple Silicon wheels need macOS 14+ | `[tool.uv] required-environments` forks the lock to 1.23.2 on Intel so the hash-pinned Homebrew install works; formula requires Sonoma on ARM; Intel not covered by CI |
+| Python range | Revised 2026-09-27: the latest `kokoro-onnx`, 0.6.1, declares `>=3.10,<3.14`, so Python 3.14 is not supported (upstream issue #187). All other pinned packages support 3.13. `onnxruntime` 1.30 cp313 wheels exist for macOS arm64 (≥14), Linux x86_64/aarch64, Windows amd64/arm64 | `requires-python = ">=3.13,<3.14"` |
+| Intel Macs | Revised 2026-09-27: `onnxruntime` 1.30 publishes no macOS x86_64 wheels; the last release with them is 1.23.2. 1.30 Apple Silicon wheels need macOS 14+ | Intel Macs unsupported; no fork to the older 1.23.2. Formula requires `arch: :arm64` and Sonoma on macOS |
 | `mobi` API | `mobi.extract(path) -> (tempdir, path)`; path is `mobi8/*.epub` (KF8/AZW3), `mobi7/book.html` (old MOBI, with `content.opf` + `toc.ncx`), or a PDF; encrypted books raise an exception whose message contains "encrypted" | AZW3 reuses the EPUB reader; old MOBI splits `book.html` at the NCX `filepos` anchors |
 | PDF encryption | Owner-password-only AES PDFs open with an empty password only when `cryptography` is installed | Dependency is `pypdf[crypto]`; user-password PDFs are rejected as protected |
 | ffmpeg | M4B: concat WAVs + FFMETADATA + attached JPEG verified with ffprobe on ffmpeg 9.0.2 (chapters, `=`/`;` escaping, tags, cover); MP3: `libmp3lame` + ID3v2.3 tags + attached cover verified | Exact arguments in the plan |

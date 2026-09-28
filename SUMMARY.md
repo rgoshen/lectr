@@ -1,5 +1,34 @@
 # Summary
 
+## [2026-09-27 18:34] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan, design spec, README (tech stack versions)
+
+**Summary:**
+Pinned the tech stack to its latest releases. Python is 3.13 only (`>=3.13,<3.14`, classifier,
+ruff `py313`, CI matrix and lock-check runner, Homebrew `python@3.13`). Removed the onnxruntime
+1.23.2 lock fork for Intel Macs, so onnxruntime is 1.30.0 on every platform. Intel Macs are
+unsupported, and the Homebrew formula declares `depends_on arch: :arm64` on macOS. Updated spec
+§1 platforms and §12, ADR-001, the Task 1 TODO risks, the README prerequisites, and plan
+changelog row V1.
+
+**Rationale:**
+A version audit found every pinned package and GitHub Action already at its latest release.
+Python 3.14 is newer, but the latest kokoro-onnx, 0.6.1, declares `requires-python <3.14`
+(https://github.com/thewh1teagle/kokoro-onnx/blob/main/pyproject.toml#L9; support pending in
+https://github.com/thewh1teagle/kokoro-onnx/issues/187), so 3.13 is the newest supported version.
+The user decided to run the latest onnxruntime on every platform. onnxruntime 1.30.0 has no
+macOS x86_64 wheels (https://pypi.org/project/onnxruntime/1.30.0/#files); the last release with
+them is 1.23.2, so Intel Macs are dropped instead of pinned to it. Verified: the plan's
+pyproject.toml locks to `==3.13.*`, syncs and imports on 3.13.8, and all 37 locked packages match
+their latest PyPI release.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Tasks 1, 14-16; changelog V1)
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md (§1, §12)
+- https://docs.brew.sh/Formula-Cookbook (depends_on arch)
+
 ## [2026-09-27 16:10] Commit Summary
 
 **Change Type:** Docs
