@@ -1,5 +1,31 @@
 # Summary
 
+## [2026-09-27 18:16] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Implementation plan, design spec, README (tech stack versions)
+
+**Summary:**
+Every component now targets its latest release with no older fallbacks. Python 3.14 only
+(`>=3.14,<3.15`, classifiers, ruff `py314`, CI matrix, Homebrew `python@3.14`). Removed the
+onnxruntime 1.23.2 fork for Intel Macs; Intel Macs are unsupported, and the formula requires
+`arch: :arm64` on macOS. Spec §1 platforms, §12 rows, ADR-001, the TODO.md risks, the README
+prerequisites are updated; plan changelog row V1 records the audit.
+
+**Rationale:**
+The user directed latest versions only and no downgrades. A version audit found every pinned
+package and GitHub Action already latest; only Python (3.11-3.13) and the onnxruntime 1.23.2
+Intel fork lagged. onnxruntime has no cp314 wheel for macOS
+x86_64 (1.23.2 stops at cp313, and 1.30.0 cp314 has no Intel Mac build), so running 3.14 means
+dropping Intel Macs. Verified by locking the plan's pyproject.toml (`requires-python ==3.14.*`) and syncing on
+3.14.7: all 37 locked packages match their latest PyPI release.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Tasks 1, 14-16; changelog V1)
+- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md (§1, §12)
+- https://pypi.org/project/onnxruntime/1.30.0/#files
+- https://docs.brew.sh/Formula-Cookbook (depends_on arch)
+
 ## [2026-09-27 16:10] Commit Summary
 
 **Change Type:** Docs
