@@ -1,5 +1,24 @@
 # Summary
 
+## [2026-09-27 18:17] Commit Summary
+
+**Change Type:** Docs
+**Scope:** CLAUDE.md
+
+**Summary:**
+Added CLAUDE.md for Claude Code: project status (spec and plan are the source of truth; spec
+§12 amends earlier sections), uv/pytest/ruff/mypy commands including single-test runs, the
+readers → pipeline/tts → audio architecture, project rules that are easy to break, and the
+GitFlow workflow.
+
+**Rationale:**
+No code exists yet, so the file points at the spec and plan instead of listing a file tree
+that Task 1 would make stale. It records non-obvious constraints (the local hook that rejects
+the str.format call, ruff RUF001, merge commits only for PRs) that otherwise cost a failed attempt.
+
+**References:**
+- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Global Constraints)
+
 ## [2026-09-27 18:16] Commit Summary
 
 **Change Type:** Docs
