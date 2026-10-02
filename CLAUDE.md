@@ -9,11 +9,11 @@ lectr is a CLI that turns DRM-free EPUB/PDF/MOBI/AZW3/TXT/Markdown books into ch
 
 Implementation has not started. The source of truth is:
 
-- `docs/superpowers/specs/2026-09-26-lectr-design.md` — design. **§12 "Planning verification
+- `docs/specs/2026-09-26-lectr-design.md` — design. **§12 "Planning verification
   results" amends earlier sections** (e.g. no system espeak-ng, no own text chunking,
   `readers/` is a package, Python 3.13 only, because the latest kokoro-onnx (0.6.1) declares `<3.14`; Intel Macs are
   unsupported because onnxruntime 1.30 has no Intel Mac wheels). Every component is pinned to its latest release; do not add older fallbacks.
-- `docs/superpowers/plans/2026-09-26-lectr-v1.md` — 16 TDD tasks with exact code, pinned deps,
+- `docs/plans/2026-09-26-lectr-v1.md` — 16 TDD tasks with exact code, pinned deps,
   and verified ffmpeg arguments. Its "Global Constraints" section is binding. Execute it
   task-by-task on `feature/lectr-v1`; if a gate fails, fix the smallest thing and note it in
   `SUMMARY.md` rather than redesigning.
