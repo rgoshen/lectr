@@ -1,5 +1,31 @@
 # Summary
 
+## [2026-10-02 16:43] Commit Summary
+
+**Change Type:** Docs
+**Scope:** DevOps design
+
+**Summary:**
+Added `docs/specs/2026-10-02-devops-design.md`: repo guardrails as ruleset JSON (merge-commit
+only, PR required, `v*` tags immutable), CI moved to right after v1 Task 1 with a 4-OS matrix
+(adds Linux aarch64) and a supply-chain job (pip-audit, pip-licenses GPL allow-list, zizmor),
+python-semantic-release on `release/*` and `hotfix/*` branches, and a release workflow triggered
+by merges to `main` that reuses CI, smoke-tests the wheel, attaches `requirements.lock` and a
+CycloneDX SBOM to the GitHub Release, and publishes with build provenance and PEP 740
+attestations.
+
+**Rationale:**
+An adversarial review of v1 plan Tasks 15–16 found that a release never waited for CI and that
+a `v*` tag on any commit would publish; research found `uv publish` does not create attestations.
+Releasing on merge to `main` (skipped when the version is already tagged) closes both and makes
+re-runs harmless. `requirements.lock` moved to a release asset so Dependabot PRs stay green.
+Alternatives considered: manual tag trigger with an ancestry guard; committed lock with manual
+regeneration; CodeQL and Scorecard (out of scope for a single-maintainer CLI).
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+- Amends: docs/specs/2026-09-26-lectr-design.md §9; docs/plans/2026-09-26-lectr-v1.md Tasks 15–16
+
 ## [2026-10-01 17:40] Commit Summary
 
 **Change Type:** Docs
