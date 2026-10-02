@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-`lectr` is currently design-first; implementation has not yet landed. Read `README.md` for the product overview and `CONTRIBUTING.md` for the human workflow. The binding technical sources are `docs/superpowers/specs/2026-09-26-lectr-design.md` and `docs/superpowers/plans/2026-09-26-lectr-v1.md`.
+`lectr` is currently design-first; implementation has not yet landed. Read `README.md` for the product overview and `CONTRIBUTING.md` for the human workflow. The binding technical sources are `docs/specs/2026-09-26-lectr-design.md` and `docs/plans/2026-09-26-lectr-v1.md`.
 
 The planned Python package lives in `src/lectr/`. Keep format-specific parsing in `src/lectr/readers/`, orchestration in `pipeline.py`, synthesis in `tts.py`, and encoding in `audio.py`. Mirror modules with `tests/test_<module>.py`; place generated or freely licensed samples in `tests/fixtures/`. Record significant decisions in `docs/adr/`.
 

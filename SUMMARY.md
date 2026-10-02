@@ -1,5 +1,24 @@
 # Summary
 
+## [2026-10-01 17:40] Commit Summary
+
+**Change Type:** Docs
+**Scope:** docs/ layout
+
+**Summary:**
+Moved `docs/superpowers/plans/` and `docs/superpowers/specs/` to `docs/plans/` and
+`docs/specs/`, removed the empty `docs/superpowers/`, and rewrote every path reference
+(README, CONTRIBUTING, AGENTS.md, CLAUDE.md, SUMMARY.md, the plan).
+
+**Rationale:**
+The `superpowers` folder named the tool that generated the docs, not their content. Older
+SUMMARY.md entries were rewritten too so their references still resolve. The plan's
+`superpowers:` skill names are not paths and were left alone.
+
+**References:**
+- Spec: docs/specs/2026-09-26-lectr-design.md
+- Plan: docs/plans/2026-09-26-lectr-v1.md
+
 ## [2026-09-27 18:35] Commit Summary
 
 **Change Type:** Docs
@@ -17,7 +36,7 @@ that Task 1 would make stale. It records non-obvious constraints (the local hook
 the str.format call, ruff RUF001, merge commits only for PRs) that otherwise cost a failed attempt.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Global Constraints)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Global Constraints)
 
 ## [2026-09-27 18:34] Commit Summary
 
@@ -44,8 +63,8 @@ pyproject.toml locks to `==3.13.*`, syncs and imports on 3.13.8, and all 37 lock
 their latest PyPI release.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Tasks 1, 14-16; changelog V1)
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md (§1, §12)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 14-16; changelog V1)
+- Spec: docs/specs/2026-09-26-lectr-design.md (§1, §12)
 - https://docs.brew.sh/Formula-Cookbook (depends_on arch)
 
 ## [2026-09-27 16:10] Commit Summary
@@ -65,7 +84,7 @@ merge would bypass the PR and commit directly to `develop`. If GitHub merges the
 commit, the design tip is still an ancestor of `develop`, so the check holds either way.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Task 1, Step 1)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1, Step 1)
 - PR: rgoshen/lectr#1
 
 ## [2026-09-26 17:55] Commit Summary
@@ -82,7 +101,7 @@ The user asked for a `main` branch and committed a comprehensive `.gitignore`. T
 steps would have failed on `git branch main` and overwritten that file.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Task 1)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
 
 ## [2026-09-26 17:45] Commit Summary
 
@@ -103,8 +122,8 @@ Every fix was implemented and tested in scratch first, then ported into the plan
 from the plan alone gives 121 passing tests, 95% coverage, and clean ruff and mypy.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog A1–A20)
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md §12 (Intel Macs row)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Revision changelog A1–A20)
+- Spec: docs/specs/2026-09-26-lectr-design.md §12 (Intel Macs row)
 
 ## [2026-09-26 17:10] Commit Summary
 
@@ -119,7 +138,7 @@ The user chose A over streaming synthesis (B) and rejecting long chapters (C). A
 keeps resume granular, and adds navigation to chapterless books with the least code.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog, G1)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Revision changelog, G1)
 
 ## [2026-09-26 16:55] Commit Summary
 
@@ -137,7 +156,7 @@ memory/WAV-size failure for chapterless books (G1), confirmed in the kokoro-onnx
 After the fixes: 107 tests pass, 95% coverage, and ruff and mypy are clean.
 
 **References:**
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md (Revision changelog)
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Revision changelog)
 
 ## [2026-09-26 16:20] Commit Summary
 
@@ -160,8 +179,8 @@ Every to-verify item was checked against real artifacts instead of memory:
 - Homebrew: forces source builds, so the tap formula uses uv.
 
 **References:**
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
-- Plan: docs/superpowers/plans/2026-09-26-lectr-v1.md
+- Spec: docs/specs/2026-09-26-lectr-design.md
+- Plan: docs/plans/2026-09-26-lectr-v1.md
 
 ## [2026-09-26 15:40] Commit Summary
 
@@ -177,7 +196,7 @@ The user confirmed `rgoshen` as the owning GitHub account. The `lectr` name is u
 and neither `rgoshen/lectr` nor `rgoshen/homebrew-tap` exists yet.
 
 **References:**
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+- Spec: docs/specs/2026-09-26-lectr-design.md
 
 ## [2026-09-26 15:35] Commit Summary
 
@@ -195,7 +214,7 @@ the MIT template, because bundling the GPL-3.0 `mobi` library requires GPL-3.0. 
 the project as unreleased, since the commands describe the planned v1.
 
 **References:**
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+- Spec: docs/specs/2026-09-26-lectr-design.md
 
 ## [2026-09-26 15:05] Commit Summary
 
@@ -216,4 +235,4 @@ CLI flags over a YAML config written by a `lectr setup` wizard; distribution via
 plus a Homebrew tap.
 
 **References:**
-- Spec: docs/superpowers/specs/2026-09-26-lectr-design.md
+- Spec: docs/specs/2026-09-26-lectr-design.md

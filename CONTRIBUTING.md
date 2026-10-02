@@ -12,7 +12,7 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
 ### 1. Discuss changes first
 
 - For features or behavior changes, open an issue before starting work.
-- Link related issues, ADRs (`docs/adr/`), or design specs (`docs/superpowers/specs/`).
+- Link related issues, ADRs (`docs/adr/`), or design specs (`docs/specs/`).
 
 ### 2. Branch (GitFlow)
 

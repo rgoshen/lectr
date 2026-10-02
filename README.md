@@ -7,7 +7,7 @@ MOBI/AZW3, plain text, and Markdown, narrates them with the local
 services, no API keys, no GPU required.
 
 > **Status:** in development, not yet released. Commands below describe the v1 design in
-> [`docs/superpowers/specs/2026-09-26-lectr-design.md`](docs/superpowers/specs/2026-09-26-lectr-design.md).
+> [`docs/specs/2026-09-26-lectr-design.md`](docs/specs/2026-09-26-lectr-design.md).
 
 ## Getting Started
 
