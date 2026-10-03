@@ -1,0 +1,46 @@
+name: Bug report
+description: Something lectr did wrong
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: lectr version
+      description: Output of `lectr --version`
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - macOS (Apple Silicon)
+        - Linux x86_64
+        - Linux aarch64
+        - Windows x86_64
+        - Other (unsupported)
+    validations:
+      required: true
+  - type: dropdown
+    id: format
+    attributes:
+      label: Book format
+      options: [EPUB, PDF, MOBI, AZW3, TXT, Markdown, Not format-specific]
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior, with the error output
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: Please do not attach copyrighted books; describe the file or share a small, freely licensed sample.
