@@ -1,5 +1,31 @@
 # Summary
 
+## [2026-10-02 17:30] Commit Summary
+
+**Change Type:** Docs
+**Scope:** DevOps spec, v1 plan, guardrails plan, design spec
+
+**Summary:**
+Closed spec review findings R1–R22 on the DevOps design. Spec revised with inline `[Rxx]` tags
+and a revision changelog; planning-time §10 kept. v1 plan: ci.yml no longer runs on push to
+`main` (release.yml calls it) and uses `fail-fast: false`; release smoke test installs
+`requirements.lock` plus the sdist like the Homebrew formula; `homebrew` job, environment, and
+`HOMEBREW_TAP_TOKEN` removed in favour of a manual tap update in the runbook; one `psr version`
+run with `build_command` replaces the three-run sequence. Guardrails plan: Dependabot
+`commit-message.prefix: "chore(deps)"`. Design spec §9 note mentions the manual tap update.
+
+**Rationale:**
+Findings came from a spec-gap audit, an adversarial review, and a DevOps review checked against
+GitHub, pip-audit, zizmor, and PSR sources. Maintainer chose the recommended options: sdist
+smoke test, single PSR run, keep both PEP 740 and build provenance, manual tap updates (no
+expiring token for one formula). IDs are R-prefixed because the plan already uses G1–G7. Both
+plan workflows were extracted, YAML-parsed, and linted with zizmor 1.30.1 (no findings). The
+single PSR run is not yet dry-run tested; Task 16 Step 6 requires it.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md (revision changelog R1–R22)
+- Plans: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b, 16); docs/plans/2026-10-02-repo-guardrails.md (Task 3)
+
 ## [2026-10-02 17:22] Commit Summary
 
 **Change Type:** Docs

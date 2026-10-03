@@ -156,6 +156,8 @@ updates:
   - package-ecosystem: uv
     directory: /
     target-branch: develop
+    commit-message:
+      prefix: "chore(deps)"  # Conventional Commits [R19]
     schedule:
       interval: monthly
     groups:
@@ -164,6 +166,8 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     target-branch: develop
+    commit-message:
+      prefix: "chore(deps)"  # Conventional Commits [R19]
     schedule:
       interval: monthly
     groups:

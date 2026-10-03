@@ -277,8 +277,9 @@ TDD throughout. Default test run needs neither the model nor the network.
 > **Amended 2026-10-02:** CI, release, versioning, supply chain, and repository settings are
 > specified in `docs/specs/2026-10-02-devops-design.md`, which replaces the PyPI, Homebrew
 > workflow, CI, and Dependabot bullets below where they differ. In short: releases run on merge
-> to `main` (not on pushed `v*` tags), CI covers four platforms on Python 3.13 only, and
-> `requirements.lock` is a release asset rather than a committed file.
+> to `main` (not on pushed `v*` tags), CI covers four platforms on Python 3.13 only,
+> `requirements.lock` is a release asset rather than a committed file, and the maintainer
+> updates the Homebrew tap by hand instead of the release workflow opening a PR.
 
 - `uv init --package` layout, `uv_build` backend, `[project.scripts] lectr = "lectr.cli:main"`,
   committed `uv.lock`, SemVer starting `0.1.0`.
