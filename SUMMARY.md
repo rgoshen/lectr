@@ -1,5 +1,26 @@
 # Summary
 
+## [2026-10-02 17:20] Commit Summary
+
+**Change Type:** Docs
+**Scope:** design spec, DevOps spec
+
+**Summary:**
+Design spec: §1 platforms now name the supported architectures (Windows on ARM unsupported); §9
+carries an amendment note pointing to the DevOps spec and lists all GitFlow branch types; §10
+adds the release ADR; §12 notes that `requirements.lock` is a release asset. DevOps spec: new
+§10 records what planning dry runs changed (SHA pins in both workflows per zizmor, `$/`
+self-repository call, `actions/attest` for provenance and SBOM attestation, environment-mode
+SBOM, exact license strings with two hand-reviewed `UNKNOWN` packages, release concurrency,
+tap token in a `homebrew` environment); §4 tables aligned with it.
+
+**Rationale:**
+The DevOps spec supersedes design §9; leaving §9 unannotated would let an executor follow the
+old tag-triggered design. Planning findings are recorded in the spec so spec and plan agree.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+
 ## [2026-10-02 16:43] Commit Summary
 
 **Change Type:** Docs

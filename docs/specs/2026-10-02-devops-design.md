@@ -1,7 +1,7 @@
 # lectr DevOps design
 
 - **Date:** 2026-10-02
-- **Status:** Approved design, pending spec review
+- **Status:** Approved design, pending spec review (§10 records changes found while planning)
 - **Amends:** `docs/specs/2026-09-26-lectr-design.md` §9 and `docs/plans/2026-09-26-lectr-v1.md`
   Tasks 15 and 16. Where this document and those disagree, this document wins.
 
@@ -66,13 +66,13 @@ or Scorecard if a second maintainer joins.
 | `.github/CODEOWNERS` | `* @rgoshen` (review requests only; no approvals required) |
 | `.github/pull_request_template.md` | From `~/.claude/templates/PULL_REQUEST_TEMPLATE.md` |
 | `.github/ISSUE_TEMPLATE/bug.yml`, `feature.yml` | Bug form: lectr version, OS and architecture, book format, command, output. Feature form: problem, proposal |
-| `.github/dependabot.yml` | `uv` and `github-actions`, monthly, each with one group matching `*` |
+| `.github/dependabot.yml` | `uv` and `github-actions`, monthly, `target-branch: develop`, each with one group matching `*` |
 | `CONTRIBUTING.md` | "Repository settings" section with the `gh api` commands that apply the rulesets and disable squash and rebase merges |
 
 Rulesets live in the repo as JSON so the settings are reviewable and re-appliable; applying them
 changes the live repo and needs the maintainer's explicit approval.
 
-### 4.2 CI (`.github/workflows/ci.yml`; v1 plan Task 15, moved after Task 1)
+### 4.2 CI (`.github/workflows/ci.yml`; v1 plan Task 1b, moved from Task 15)
 
 - Triggers: `pull_request`, `push` to `main` and `develop`, `workflow_call`.
 - `permissions: contents: read`; `concurrency: {group: ci-${{ github.ref }}, cancel-in-progress: true}`;
@@ -104,7 +104,10 @@ match = "^(release|hotfix)/.+$"
 prerelease = false
 ```
 
-PSR runs as `uvx --from python-semantic-release==10.7.0 semantic-release`. It is a maintainer
+Also set `commit_message = "chore(release): v{version}"` (the default is not a Conventional
+Commit) and `[tool.semantic_release.changelog.default_templates] mask_initial_release = false`
+(the default first changelog says only "Initial Release"). PSR runs as
+`uvx --from python-semantic-release==10.7.0 semantic-release`. It is a maintainer
 tool, not a dependency. Release runbook (CONTRIBUTING):
 
 1. From an up-to-date `develop`: `git switch -c release/next`, then
@@ -126,12 +129,12 @@ Every action is pinned by full commit SHA with the version in a trailing comment
 | Job | Needs | Does |
 |---|---|---|
 | `check` | — | `v=$(uv version --short)`; output `release=false` if `refs/tags/v$v` exists on origin, else `release=true` and `version=$v`. Every later job has `if: needs.check.outputs.release == 'true'` |
-| `ci` | check | `uses: ./.github/workflows/ci.yml` |
-| `build` | check | `uv build`; smoke test the artifact with `uvx --from dist/lectr-$v-py3-none-any.whl lectr voices`; export `requirements.lock`; generate `sbom.cdx.json` with `cyclonedx-bom==7.5.0` from `requirements.lock`; `actions/attest-build-provenance` over `dist/*` and the SBOM (`id-token: write`, `attestations: write`); upload artifact |
+| `ci` | check | `uses: $/.github/workflows/ci.yml` |
+| `build` | check | `uv build`; smoke test the artifact with `uvx --from dist/lectr-$v-py3-none-any.whl lectr voices`; extract the `CHANGELOG.md` section (fail if missing); export `requirements.lock`; generate `sbom.cdx.json` with `cyclonedx-bom==7.5.0` (`cyclonedx-py environment`); `actions/attest` build provenance over `dist/*` and the lock, and an SBOM attestation (`id-token: write`, `attestations: write`); upload artifacts |
 | `e2e` | check | Real model on Linux: `uv sync --locked`, `pytest -m e2e -v` |
 | `publish` | ci, build, e2e | Environment `pypi` (deployment branch `main`); `id-token: write`; download artifact; `astral-sh/attest-action` on `dist/*`; `uv publish --trusted-publishing always --check-url https://pypi.org/simple/ dist/*` |
 | `github-release` | publish | `contents: write`; `gh release create v$v --target $GITHUB_SHA` with the `CHANGELOG.md` section for `$v` as notes, attaching `dist/*`, `requirements.lock`, `sbom.cdx.json`. Skip creation if the release exists (re-run safety) |
-| `homebrew` | github-release | Render the formula; clone the tap with `HOMEBREW_TAP_TOKEN`; `git push -f origin lectr-$v`; `gh pr view lectr-$v \|\| gh pr create` |
+| `homebrew` | github-release | Environment `homebrew`; render the formula; clone the tap with `HOMEBREW_TAP_TOKEN`; `git push -f origin lectr-$v`; `gh pr view lectr-$v \|\| gh pr create` |
 
 Values from contexts reach `run:` steps only through `env:`, never inline `${{ }}`.
 
@@ -167,7 +170,7 @@ GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later. The plan records the exact str
 `pip-licenses` reports for the current lock; an unknown string fails the gate and is resolved by
 reading that package's license, never by widening the list blindly.
 
-## 7. Open items resolved during planning (not design changes)
+## 7. Open items resolved during planning (resolved; results in §10)
 
 1. A dry run of the §4.3 runbook on a scratch repo to confirm the PSR commands and that the
    staged `uv.lock` and SUMMARY.md land in PSR's commit.
@@ -176,13 +179,13 @@ reading that package's license, never by widening the list blindly.
 3. Whether `zizmor` findings on the v1 plan's workflow text need fixes beyond §4.2 and §4.4.
 4. The CHANGELOG section extraction for release notes (PSR's changelog format).
 
-## 8. Changes to existing documents
+## 8. Changes to existing documents (done 2026-10-02)
 
 - v1 plan: Task 15 moves to directly after Task 1 and is replaced by §4.2; Task 16's workflow and
   formula are replaced by §4.4 and §4.5; the `requirements.lock` file and its sync check are
   removed from Tasks 1 and 15; the hand-off checklist becomes §9; changelog row A2 is marked
   superseded by V1; "121 tests" vs "101 tests" is reconciled; ADR-006 "Release on merge to main"
-  is added to Task 14's ADR list.
+  is written in Task 16, next to the workflow it explains.
 - Design spec §9: points to this document.
 - README: Windows ARM and Intel Macs listed as unsupported.
 
@@ -192,6 +195,25 @@ reading that package's license, never by widening the list blindly.
 2. Create `rgoshen/homebrew-tap` with a README on `main`.
 3. On pypi.org, add a **pending** trusted publisher: project `lectr`, repo `rgoshen/lectr`,
    workflow `release.yml`, environment `pypi`.
-4. Create environment `pypi` with deployment branch `main`.
+4. Create environments `pypi` and `homebrew`, each with deployment branch `main`.
 5. Create the fine-grained `HOMEBREW_TAP_TOKEN` (contents and pull requests write on the tap only)
-   and set an expiry reminder.
+   as a secret of environment `homebrew` (deployment branch `main`), and set an expiry reminder.
+
+## 10. Changes found while planning (2026-10-02)
+
+Verified by dry runs (scratch project with the v1 `pyproject.toml`, uv 0.12.22) and by linting the
+drafted workflows with zizmor 1.30.1. These amend §4–§9; the v1 plan has the exact code.
+
+| Item | Change | Why |
+|---|---|---|
+| Action pinning | Every action in **both** workflows is pinned by commit SHA | zizmor's default policy fails on tag pins; with grouped monthly Dependabot PRs the extra churn is one PR a month |
+| Reusable workflow call | `uses: $/.github/workflows/ci.yml` | zizmor `self-repository`; GitHub supports `$/` for reusable workflows since [2026-07-30](https://github.blog/changelog/2026-07-30-reference-same-repository-actions-with-self-repository-syntax/). actionlint 1.7.12 does not recognize it yet and is not a gate |
+| Provenance | `actions/attest` v4.2.2 instead of the `attest-build-provenance` wrapper, plus a second `actions/attest` call with `sbom-path` for an SBOM attestation | The wrapper's README recommends `actions/attest` for new workflows |
+| SBOM | `cyclonedx-py environment` on the build runner's runtime venv, not `cyclonedx-py requirements requirements.lock` | Environment mode records licenses and the dependency graph; requirements mode has neither. Trade-off: only the Linux x86_64 package set |
+| License gate | Exact strings, `--ignore-packages espeakng-loader kokoro-onnx` | Both report `UNKNOWN`: kokoro-onnx ships an MIT LICENSE file without metadata; espeakng-loader has no metadata and bundles GPL-3.0-or-later espeak-ng |
+| pip-audit input | Exported file, not stdin | `-r -` is rejected |
+| PSR | First `--print` gives 0.1.0 from tags (pyproject version ignored); needs an `origin` remote | Dry run |
+| Release concurrency | `concurrency: {group: release, cancel-in-progress: false}` | Two quick merges must not race or cancel a half-done release |
+| Tap token | Environment `homebrew` secret instead of a repository secret | zizmor `secrets-outside-env`: only `main` can read it |
+| Release notes | Extracted from `CHANGELOG.md` in `build` (fails before publishing if the section is missing) and passed as an artifact | A missing section must stop the release before PyPI, not after |
+| Dependabot config | Whether Dependabot reads `dependabot.yml` from `develop` or only the default branch (`main`) is unverified | Guardrails plan Task 3 Step 4 checks it after merge |
