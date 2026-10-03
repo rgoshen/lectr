@@ -293,3 +293,5 @@ tmbootpicker.efi
 
 # Misc
 .serena/
+.superpowers/
+*.rtf
