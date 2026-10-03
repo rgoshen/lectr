@@ -23,7 +23,7 @@ with a package manager on macOS, Linux, or Windows.
 
 | Topic | Decision |
 |---|---|
-| Platforms | macOS (Apple Silicon, 14+), Linux, Windows |
+| Platforms | macOS (Apple Silicon, 14+), Linux (x86_64, aarch64), Windows (x86_64). Intel Macs and Windows on ARM are unsupported (see §12 and the DevOps spec) |
 | Distribution | PyPI (installed with `uv tool install`) + own Homebrew tap. Windows via PyPI only. |
 | Tooling | uv for everything (init, deps, run, build, publish). No pip in docs or workflows. |
 | TTS | Kokoro-82M via `kokoro-onnx`, English only for v1. Synthesis isolated in one module; no engine plugin system. |
@@ -274,6 +274,13 @@ TDD throughout. Default test run needs neither the model nor the network.
 
 ## 9. Packaging, distribution, CI
 
+> **Amended 2026-10-02:** CI, release, versioning, supply chain, and repository settings are
+> specified in `docs/specs/2026-10-02-devops-design.md`, which replaces the PyPI, Homebrew
+> workflow, CI, and Dependabot bullets below where they differ. In short: releases run on merge
+> to `main` (not on pushed `v*` tags), CI covers four platforms on Python 3.13 only,
+> `requirements.lock` is a release asset rather than a committed file, and the maintainer
+> updates the Homebrew tap by hand instead of the release workflow opening a PR.
+
 - `uv init --package` layout, `uv_build` backend, `[project.scripts] lectr = "lectr.cli:main"`,
   committed `uv.lock`, SemVer starting `0.1.0`.
 - Runtime deps: `kokoro-onnx`, `mobi`, `pypdf`, `PyYAML`, `platformdirs`.
@@ -289,7 +296,8 @@ TDD throughout. Default test run needs neither the model nor the network.
 - **CI (every PR):** matrix ubuntu/macos/windows × supported Pythons with `astral-sh/setup-uv`
   caching; ffmpeg installed per runner; ruff → format check → mypy → pytest+coverage, fail fast.
 - Dependabot for Python deps and GitHub Actions.
-- GitFlow (`main`, `develop`, `feature/*`), Conventional Commits, `SUMMARY.md` entry per commit,
+- GitFlow (`main`, `develop`, `feature/*`, `bugfix/*`, `chore/*`, `release/*`, `hotfix/*`),
+  Conventional Commits, `SUMMARY.md` entry per commit,
   `TODO.md` for planned work.
 
 ## 10. Documentation deliverables
@@ -298,7 +306,7 @@ From `~/.claude/templates/`: `README.md` (install via uv and Homebrew, external 
 OS, usage, config/wizard, troubleshooting), `CONTRIBUTING.md` (uv dev setup, tests, GitFlow,
 commit rules), `LICENSE.md` (GPL-3.0 full text). Also `ARCHITECTURE.md` and ADRs:
 Kokoro TTS; GPL-3.0 for MOBI support; chapter cache pipeline; M4B part splitting; YAML config
-with flag precedence.
+with flag precedence; release on merge to `main` (added 2026-10-02 by the DevOps spec).
 
 ## 11. Risks
 
@@ -326,6 +334,6 @@ Resolved "to verify" items; these amend the sections above.
 | `mobi` API | `mobi.extract(path) -> (tempdir, path)`; path is `mobi8/*.epub` (KF8/AZW3), `mobi7/book.html` (old MOBI, with `content.opf` + `toc.ncx`), or a PDF; encrypted books raise an exception whose message contains "encrypted" | AZW3 reuses the EPUB reader; old MOBI splits `book.html` at the NCX `filepos` anchors |
 | PDF encryption | Owner-password-only AES PDFs open with an empty password only when `cryptography` is installed | Dependency is `pypdf[crypto]`; user-password PDFs are rejected as protected |
 | ffmpeg | M4B: concat WAVs + FFMETADATA + attached JPEG verified with ffprobe on ffmpeg 9.0.2 (chapters, `=`/`;` escaping, tags, cover); MP3: `libmp3lame` + ID3v2.3 tags + attached cover verified | Exact arguments in the plan |
-| Homebrew | Homebrew's Python helper forces source builds (`--no-binary :all:`), which fails for wheel-only `onnxruntime` | Tap formula creates a venv with uv and installs pinned requirements; verified manually before first release |
+| Homebrew | Homebrew's Python helper forces source builds (`--no-binary :all:`), which fails for wheel-only `onnxruntime` | Tap formula creates a venv with uv and installs pinned requirements (`requirements.lock`, attached to each GitHub Release since 2026-10-02); verified manually before first release |
 
 Structural refinement: `readers.py` becomes a `readers/` package (one module per format) and shared errors live in `errors.py`, to keep files small.

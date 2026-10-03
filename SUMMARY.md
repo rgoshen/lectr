@@ -1,5 +1,103 @@
 # Summary
 
+## [2026-10-02 17:30] Commit Summary
+
+**Change Type:** Docs
+**Scope:** DevOps spec, v1 plan, guardrails plan, design spec
+
+**Summary:**
+Closed spec review findings R1–R22 on the DevOps design. Spec revised with inline `[Rxx]` tags
+and a revision changelog; planning-time §10 kept. v1 plan: ci.yml no longer runs on push to
+`main` (release.yml calls it) and uses `fail-fast: false`; release smoke test installs
+`requirements.lock` plus the sdist like the Homebrew formula; `homebrew` job, environment, and
+`HOMEBREW_TAP_TOKEN` removed in favour of a manual tap update in the runbook; one `psr version`
+run with `build_command` replaces the three-run sequence. Guardrails plan: Dependabot
+`commit-message.prefix: "chore(deps)"`. Design spec §9 note mentions the manual tap update.
+
+**Rationale:**
+Findings came from a spec-gap audit, an adversarial review, and a DevOps review checked against
+GitHub, pip-audit, zizmor, and PSR sources. Maintainer chose the recommended options: sdist
+smoke test, single PSR run, keep both PEP 740 and build provenance, manual tap updates (no
+expiring token for one formula). IDs are R-prefixed because the plan already uses G1–G7. Both
+plan workflows were extracted, YAML-parsed, and linted with zizmor 1.30.1 (no findings). The
+single PSR run is not yet dry-run tested; Task 16 Step 6 requires it.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md (revision changelog R1–R22)
+- Plans: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b, 16); docs/plans/2026-10-02-repo-guardrails.md (Task 3)
+
+## [2026-10-02 17:22] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan, guardrails plan
+
+**Summary:**
+New `docs/plans/2026-10-02-repo-guardrails.md` (rulesets as JSON, merge commits only, Dependabot
+targeting `develop`, CODEOWNERS, PR template, issue forms, CONTRIBUTING settings section). v1
+plan: Task 1 adds the semantic-release config and requires the guardrails plan first; new Task
+1b (CI right after Task 1, 4-OS matrix with Linux aarch64, supply-chain job, required checks);
+Task 15 becomes a pointer; Task 16 rewritten (release on merge to `main`, reusable CI, wheel
+smoke test, attestations, SBOM, re-runnable tap PR, ADR-006, release runbook, hand-off list);
+Global Constraints require green CI after each task; revision rows D1–D8; stale test count,
+A2 row, file map, and a broken code fence in Task 14 fixed.
+
+**Rationale:**
+Every new command was dry-run in a scratch project (pip-audit, pip-licenses, cyclonedx-bom,
+semantic-release) and both workflows were linted with zizmor before going into the plan, keeping
+the plan's "every step was executed" standard. Tasks were renamed 1b instead of renumbered to
+avoid breaking cross-references.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+- Plans: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b, 14, 15, 16); docs/plans/2026-10-02-repo-guardrails.md
+
+## [2026-10-02 17:20] Commit Summary
+
+**Change Type:** Docs
+**Scope:** design spec, DevOps spec
+
+**Summary:**
+Design spec: §1 platforms now name the supported architectures (Windows on ARM unsupported); §9
+carries an amendment note pointing to the DevOps spec and lists all GitFlow branch types; §10
+adds the release ADR; §12 notes that `requirements.lock` is a release asset. DevOps spec: new
+§10 records what planning dry runs changed (SHA pins in both workflows per zizmor, `$/`
+self-repository call, `actions/attest` for provenance and SBOM attestation, environment-mode
+SBOM, exact license strings with two hand-reviewed `UNKNOWN` packages, release concurrency,
+tap token in a `homebrew` environment); §4 tables aligned with it.
+
+**Rationale:**
+The DevOps spec supersedes design §9; leaving §9 unannotated would let an executor follow the
+old tag-triggered design. Planning findings are recorded in the spec so spec and plan agree.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+
+## [2026-10-02 16:43] Commit Summary
+
+**Change Type:** Docs
+**Scope:** DevOps design
+
+**Summary:**
+Added `docs/specs/2026-10-02-devops-design.md`: repo guardrails as ruleset JSON (merge-commit
+only, PR required, `v*` tags immutable), CI moved to right after v1 Task 1 with a 4-OS matrix
+(adds Linux aarch64) and a supply-chain job (pip-audit, pip-licenses GPL allow-list, zizmor),
+python-semantic-release on `release/*` and `hotfix/*` branches, and a release workflow triggered
+by merges to `main` that reuses CI, smoke-tests the wheel, attaches `requirements.lock` and a
+CycloneDX SBOM to the GitHub Release, and publishes with build provenance and PEP 740
+attestations.
+
+**Rationale:**
+An adversarial review of v1 plan Tasks 15–16 found that a release never waited for CI and that
+a `v*` tag on any commit would publish; research found `uv publish` does not create attestations.
+Releasing on merge to `main` (skipped when the version is already tagged) closes both and makes
+re-runs harmless. `requirements.lock` moved to a release asset so Dependabot PRs stay green.
+Alternatives considered: manual tag trigger with an ancestry guard; committed lock with manual
+regeneration; CodeQL and Scorecard (out of scope for a single-maintainer CLI).
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+- Amends: docs/specs/2026-09-26-lectr-design.md §9; docs/plans/2026-09-26-lectr-v1.md Tasks 15–16
+
 ## [2026-10-01 17:40] Commit Summary
 
 **Change Type:** Docs
