@@ -1,5 +1,35 @@
 # Summary
 
+## [2026-10-02 18:24] Commit Summary
+
+**Change Type:** Docs
+**Scope:** CONTRIBUTING.md, bug issue template
+
+**Summary:**
+Corrected the pull request bullets in CONTRIBUTING.md: GitHub enforces a pull request and a merge commit today, required CI checks arrive with CI (v1 plan Task 1b), and the multi-OS CI claim is qualified with "once CI lands". Added the tag ruleset update command and a note that Dependabot security-update PRs may target `main`. Added an optional `os_version` input to the bug report form.
+
+**Rationale:**
+The docs claimed enforcement that does not exist yet. The Dependabot note is phrased as "may" because the behavior is unverified. `allow_auto_merge` was deliberately left out of the PATCH command.
+
+**References:**
+- PR: #7
+
+## [2026-10-02 18:22] Commit Summary
+
+**Change Type:** Docs
+**Scope:** repository settings
+
+**Summary:**
+Guardrails applied to the live repo: rulesets `protect-main-develop` and `protect-release-tags` created, squash and rebase merges disabled, and the earlier `protect-main` ruleset deleted (same three rules, now superseded). GitHub accepted `allowed_merge_methods` and `update_allows_fetch_and_merge`, so the plan's fallback was not needed. Dependabot check: `.github/dependabot.yml` exists on `develop` and is absent from `main`; no Dependabot PRs exist yet. Whether Dependabot reads the file from a non-default branch could not be confirmed through the API.
+
+**Rationale:**
+Records the outcome of guardrails plan Task 3 Step 4. The maintainer should open Insights, Dependency graph, Dependabot: if it shows no configuration, Dependabot reads only `main` and starts after the first release merges `develop` into `main`.
+
+**References:**
+- Plan: docs/plans/2026-10-02-repo-guardrails.md (Task 3)
+- Spec: docs/specs/2026-10-02-devops-design.md §4.1
+- PR: #6
+
 ## [2026-10-02 18:15] Commit Summary
 
 **Change Type:** Feature
