@@ -1,5 +1,30 @@
 # Summary
 
+## [2026-10-02 17:22] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan, guardrails plan
+
+**Summary:**
+New `docs/plans/2026-10-02-repo-guardrails.md` (rulesets as JSON, merge commits only, Dependabot
+targeting `develop`, CODEOWNERS, PR template, issue forms, CONTRIBUTING settings section). v1
+plan: Task 1 adds the semantic-release config and requires the guardrails plan first; new Task
+1b (CI right after Task 1, 4-OS matrix with Linux aarch64, supply-chain job, required checks);
+Task 15 becomes a pointer; Task 16 rewritten (release on merge to `main`, reusable CI, wheel
+smoke test, attestations, SBOM, re-runnable tap PR, ADR-006, release runbook, hand-off list);
+Global Constraints require green CI after each task; revision rows D1–D8; stale test count,
+A2 row, file map, and a broken code fence in Task 14 fixed.
+
+**Rationale:**
+Every new command was dry-run in a scratch project (pip-audit, pip-licenses, cyclonedx-bom,
+semantic-release) and both workflows were linted with zizmor before going into the plan, keeping
+the plan's "every step was executed" standard. Tasks were renamed 1b instead of renumbered to
+avoid breaking cross-references.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md
+- Plans: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b, 14, 15, 16); docs/plans/2026-10-02-repo-guardrails.md
+
 ## [2026-10-02 17:20] Commit Summary
 
 **Change Type:** Docs
