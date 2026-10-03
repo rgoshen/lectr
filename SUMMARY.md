@@ -1,5 +1,20 @@
 # Summary
 
+## [2026-10-02 20:13] Commit Summary
+
+**Change Type:** Docs
+**Scope:** Claude Code project skills
+
+**Summary:**
+Added two user-invoked project skills for the lectr v1 GitHub Project (#5). `/story <issue>` gates on open blockers, works the story in its own worktree branched from `origin/feature/lectr-v1` using the plan task the issue links to, and stops at a green PR into `feature/lectr-v1`. `/wave <n>` picks the ready stories in one wave and runs them in parallel, one Sonnet subagent each following the story skill.
+
+**Rationale:**
+The issue bodies carry each story's details, so one procedure covers every story. Both skills are user-invoked (`disable-model-invocation`) because they create branches and PRs. The wave skill leaves Agent `isolation` unset because Claude Code bases those worktrees on `main`, not `feature/lectr-v1`. Story PRs say "Part of #N" because GitHub ignores closing keywords on PRs that do not target `main`, so the maintainer closes each issue after merging.
+
+**References:**
+- Project: https://github.com/users/rgoshen/projects/5
+- Plan: docs/plans/2026-09-26-lectr-v1.md
+
 ## [2026-10-02 18:24] Commit Summary
 
 **Change Type:** Docs
