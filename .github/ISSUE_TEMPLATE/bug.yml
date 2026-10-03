@@ -21,6 +21,13 @@ body:
         - Other (unsupported)
     validations:
       required: true
+  - type: input
+    id: os_version
+    attributes:
+      label: OS version
+      description: For example, macOS 15.1 or Ubuntu 24.04
+    validations:
+      required: false
   - type: dropdown
     id: format
     attributes:

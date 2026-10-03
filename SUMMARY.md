@@ -1,5 +1,19 @@
 # Summary
 
+## [2026-10-02 18:24] Commit Summary
+
+**Change Type:** Docs
+**Scope:** CONTRIBUTING.md, bug issue template
+
+**Summary:**
+Corrected the pull request bullets in CONTRIBUTING.md: GitHub enforces a pull request and a merge commit today, required CI checks arrive with CI (v1 plan Task 1b), and the multi-OS CI claim is qualified with "once CI lands". Added the tag ruleset update command and a note that Dependabot security-update PRs may target `main`. Added an optional `os_version` input to the bug report form.
+
+**Rationale:**
+The docs claimed enforcement that does not exist yet. The Dependabot note is phrased as "may" because the behavior is unverified. `allow_auto_merge` was deliberately left out of the PATCH command.
+
+**References:**
+- PR: #7
+
 ## [2026-10-02 18:22] Commit Summary
 
 **Change Type:** Docs

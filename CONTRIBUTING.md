@@ -50,11 +50,11 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
 ### 5. Pull requests
 
 - Target `develop`, and keep PRs small and self-contained.
-- Run all checks locally first (see below); CI runs them on Linux, macOS, and Windows.
+- Run all checks locally first (see below); once CI lands, it runs them on Linux, macOS, and Windows.
 - Describe the change, rationale, and risks, and link related issues and ADRs.
 - Pull requests from contributors are reviewed by the maintainer before merging. GitHub
-  enforces a pull request, passing CI checks, and a merge commit (no squash or rebase) on
-  `main` and `develop`; there is no auto-merge.
+  enforces a pull request and a merge commit (no squash or rebase) on `main` and `develop`.
+  Required CI checks are added when CI lands (v1 plan Task 1b). There is no auto-merge.
 
 ### 6. Documentation
 
@@ -104,10 +104,17 @@ gh api --method POST repos/rgoshen/lectr/rulesets --input .github/rulesets/tags.
 # Update (after editing a file)
 id=$(gh api repos/rgoshen/lectr/rulesets --jq '.[] | select(.name=="protect-main-develop") | .id')
 gh api --method PUT "repos/rgoshen/lectr/rulesets/$id" --input .github/rulesets/branches.json
+id=$(gh api repos/rgoshen/lectr/rulesets --jq '.[] | select(.name=="protect-release-tags") | .id')
+gh api --method PUT "repos/rgoshen/lectr/rulesets/$id" --input .github/rulesets/tags.json
 
 # Merge commits only
 gh api --method PATCH repos/rgoshen/lectr -F allow_squash_merge=false -F allow_rebase_merge=false
 ```
+
+Dependabot version updates target `develop`, but Dependabot security-update PRs may open
+against the default branch `main` (unverified). If one does, close it and redo the bump on a
+`chore/` or `bugfix/` branch from `develop`, because only `release/*` and `hotfix/*` merge
+into `main`.
 
 ## Reporting Issues
 
