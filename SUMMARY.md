@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-10-02 18:15] Commit Summary
+
+**Change Type:** Feature
+**Scope:** repository hygiene
+
+**Summary:**
+Monthly grouped Dependabot updates for uv and GitHub Actions targeting `develop`; CODEOWNERS;
+project PR template; bug and feature issue forms.
+
+**Rationale:**
+One Dependabot PR per ecosystem instead of one per package; issue forms capture the platform
+details that matter for lectr's narrow platform support.
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md §4.1
+
 ## [2026-10-02 18:14] Commit Summary
 
 **Change Type:** Feature
