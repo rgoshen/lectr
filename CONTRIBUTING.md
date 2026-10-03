@@ -23,6 +23,7 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
   git checkout develop
   git checkout -b feature/<short-description>   # new functionality
   git checkout -b bugfix/<short-description>    # non-production fixes
+  git checkout -b chore/<short-description>      # tooling, docs, repo settings
   ```
 
 - `hotfix/*` branches from `main` for urgent release fixes; `release/*` for release prep.
@@ -51,7 +52,9 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
 - Target `develop`, and keep PRs small and self-contained.
 - Run all checks locally first (see below); CI runs them on Linux, macOS, and Windows.
 - Describe the change, rationale, and risks, and link related issues and ADRs.
-- At least one review is required; no self-approval or auto-merge.
+- Pull requests from contributors are reviewed by the maintainer before merging. GitHub
+  enforces a pull request, passing CI checks, and a merge commit (no squash or rebase) on
+  `main` and `develop`; there is no auto-merge.
 
 ### 6. Documentation
 
@@ -78,7 +81,7 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
    uv run mypy src
    ```
 
-4. Optional end-to-end run with the real model (slow, downloads ~300 MB):
+4. Optional end-to-end run with the real model (slow, downloads ~350 MB):
 
    ```bash
    uv run pytest -m e2e
@@ -87,6 +90,24 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
 Dependencies are managed only with uv (`uv add`, `uv add --dev`, `uv lock`). Commit
 `uv.lock` with any dependency change. New dependencies must be license-compatible with
 GPL-3.0.
+
+## Repository settings (maintainer)
+
+Branch and tag rules live in `.github/rulesets/` and are applied with the GitHub CLI. Apply
+them once, and re-apply after editing a file:
+
+```bash
+# Create (first time)
+gh api --method POST repos/rgoshen/lectr/rulesets --input .github/rulesets/branches.json
+gh api --method POST repos/rgoshen/lectr/rulesets --input .github/rulesets/tags.json
+
+# Update (after editing a file)
+id=$(gh api repos/rgoshen/lectr/rulesets --jq '.[] | select(.name=="protect-main-develop") | .id')
+gh api --method PUT "repos/rgoshen/lectr/rulesets/$id" --input .github/rulesets/branches.json
+
+# Merge commits only
+gh api --method PATCH repos/rgoshen/lectr -F allow_squash_merge=false -F allow_rebase_merge=false
+```
 
 ## Reporting Issues
 

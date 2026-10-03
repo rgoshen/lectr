@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-10-02 18:14] Commit Summary
+
+**Change Type:** Feature
+**Scope:** repository settings
+
+**Summary:**
+Branch ruleset (PR required, merge commits only, no force-push or deletion on `main`/`develop`)
+and tag ruleset (`v*` cannot be moved or deleted) as JSON, with the `gh api` commands in
+CONTRIBUTING. CONTRIBUTING no longer claims a required review.
+
+**Rationale:**
+GitFlow rules were documented but unenforced. Required checks wait for CI (v1 Task 1b).
+
+**References:**
+- Spec: docs/specs/2026-10-02-devops-design.md §4.1
+
 ## [2026-10-02 17:30] Commit Summary
 
 **Change Type:** Docs
