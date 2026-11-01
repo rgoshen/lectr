@@ -1,5 +1,22 @@
 # Summary
 
+## [2026-11-01 14:21] Commit Summary
+
+**Change Type:** Fix
+**Scope:** tests
+
+**Summary:**
+Added `test_version_matches_pyproject` to `tests/test_cli.py`. It reads `[project].version` from `pyproject.toml` with `tomllib` (path built from `__file__`, so it does not depend on the working directory) and asserts it equals `lectr.__version__`.
+
+**Rationale:**
+The existing version test compares the `--version` output with the same `__version__` the CLI prints, so it checks wiring but cannot fail if the installed metadata and `pyproject.toml` disagree, for example after a semantic-release bump without a re-sync. The new test pins `pyproject.toml` as the single source of truth. Red/green: with the real files it passes; with `pyproject.toml` temporarily set to 0.9.9 and pytest run through `.venv/bin/python` (no re-sync) it fails with `assert '0.1.0' == '0.9.9'`; the file was then restored. Under `uv run` the project is re-synced automatically, so the test mostly guards other entry points and stale environments, which is cheap. Alternative considered: keep only the wiring test; rejected as tautological for the value.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Review: PR #37 thread on tests/test_cli.py line 11
+- Issue: GH-14
+
 ## [2026-11-01 14:20] Commit Summary
 
 **Change Type:** Fix
