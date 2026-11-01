@@ -1,5 +1,23 @@
 # Summary
 
+## [2026-11-01 14:23] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan Tasks 1 and 1b, devops-design spec section 4.2
+
+**Summary:**
+Synced the plan and spec with the files on this branch. Plan: the dev-dependency pins in Global Constraints and the Task 1 `pyproject.toml` block; the Task 1b `ci.yml` block (conditional `cancel-in-progress`, the ffmpeg verification step, the `ci-gate` job, setup-uv v10.3.3, zizmor 1.31.1); the same setup-uv and zizmor pins in the Task 16 `release.yml` blocks; the Task 1b interface and Step 5 expectation (`ci-gate`); and Step 6, which now says to require only `ci-gate` in a small chore PR after the workflow is on `develop`, with no server-filled defaults pinned. Spec section 4.2: conditional concurrency, the ffmpeg verification, `ci-gate`, zizmor 1.31.1, and the same corrected final step. The extracted plan YAML is identical to `ci.yml`, and the plan's Task 1 TOML block is identical to `pyproject.toml`.
+
+**Rationale:**
+A re-run of the plan would otherwise reintroduce the old pins, the always-cancelling concurrency, the missing ffmpeg check and a Step 6 that hangs pull requests lacking the workflow; commit 7523647 set the precedent of keeping plan blocks equal to the committed files. The historical research table in the spec (section 3, "Latest: ... setup-uv v10.2.0") is a dated record of what was true on 2026-10-02 and was left as written. The Task 16 pins were updated so that block does not paste older versions when it is executed.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b and 16)
+- Review: PR #37 threads on ci.yml and branches.json
+- Issue: GH-14, GH-15
+
 ## [2026-11-01 14:21] Commit Summary
 
 **Change Type:** Docs
