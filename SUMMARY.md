@@ -1,5 +1,22 @@
 # Summary
 
+## [2026-11-01 14:19] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
+Added a `Verify ffmpeg and ffprobe are on PATH` step to the `test` job in `.github/workflows/ci.yml`. It runs `ffmpeg -version && ffprobe -version` under `shell: bash` right after the three per-OS install steps and before `uv sync`.
+
+**Rationale:**
+The ffmpeg-dependent tests use `@requires_ffmpeg`, which skips when ffmpeg is absent. If an `apt`, `brew` or `choco` install or its PATH setup failed quietly, that OS's job would stay green with every ffmpeg test skipped, which defeats the four-platform matrix. Failing the job at the install is the earliest and clearest signal. `shell: bash` makes the `&&` behave the same on the Windows runner (Git Bash). Alternative considered: failing the run on any skip with `pytest -rs` parsing; rejected as heavier and noisier. No ffmpeg test exists yet, so this guards the install steps that already exist. This was deferred as a minor finding in the Task 1b review and is now picked up from the PR review.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 41
+- Issue: GH-15
+
 ## [2026-11-01 14:18] Commit Summary
 
 **Change Type:** Fix

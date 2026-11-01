@@ -40,6 +40,10 @@ jobs:
       - name: Install ffmpeg (Windows)
         if: runner.os == 'Windows'
         run: choco install ffmpeg -y --no-progress
+      # The ffmpeg tests skip when it is missing, so a silent install failure would stay green.
+      - name: Verify ffmpeg and ffprobe are on PATH
+        shell: bash
+        run: ffmpeg -version && ffprobe -version
       - run: uv sync --locked
       - run: uv run ruff check
       - run: uv run ruff format --check
