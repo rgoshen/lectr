@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-11-01 13:07] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan Task 1
+
+**Summary:**
+Synced the Task 1 Step 2 `pyproject.toml` block in `docs/plans/2026-09-26-lectr-v1.md` with the committed file: the `uv_build` pin is now `>=0.13.6,<0.14`, and `[tool.ruff]` gains the `extend-exclude = ["*.md"]` setting with its comment. The block is now identical to `pyproject.toml`. No other part of the plan changed.
+
+**Rationale:**
+A re-run of Task 1 from the plan would otherwise reintroduce the `uv_build` sync warning and the `ruff format --check` failure on the Markdown docs. The repo was searched for other mentions of the old pin; the only other hits (`uv_build` named without a version in the plan overview and the design spec) do not refer to the pin and were left alone.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
 ## [2026-11-01 13:06] Commit Summary
 
 **Change Type:** Fix
