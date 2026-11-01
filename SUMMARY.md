@@ -1,5 +1,24 @@
 # Summary
 
+## [2026-11-01 13:06] Commit Summary
+
+**Change Type:** Fix
+**Scope:** build backend
+
+**Summary:**
+Bumped the build-system pin in `pyproject.toml` from `uv_build>=0.12.19,<0.13` to `uv_build>=0.13.6,<0.14`. Nothing else in `pyproject.toml` changed, and `uv.lock` is unchanged.
+
+**Rationale:**
+The plan's `<0.13` pin excluded the current uv-build 0.13.6, so every `uv sync` printed a "does not contain the current uv version" warning. The project pins every component to its latest release, and 0.13.6 is that release (https://pypi.org/project/uv-build/). Verified after the bump: `uv sync` is warning-free, `uv lock --check` passes, and `uv build` produces an sdist and a wheel.
+
+**Bug Fix Context (if applicable):**
+Root cause: the build-backend range stopped one minor version short of the installed uv. The new range tracks the 0.13 series.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
 ## [2026-11-01 12:33] Commit Summary
 
 **Change Type:** Feature
