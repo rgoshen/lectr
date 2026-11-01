@@ -1,5 +1,25 @@
 # Summary
 
+## [2026-11-01 14:18] Commit Summary
+
+**Change Type:** Fix
+**Scope:** CI
+
+**Summary:**
+`cancel-in-progress` in `.github/workflows/ci.yml` is now `${{ github.event_name == 'pull_request' }}` instead of `true`, so only pull request runs are superseded by a newer push.
+
+**Rationale:**
+The concurrency group is shared by every trigger. With `true`, two quick merges to `develop` cancelled the first merge commit's post-merge run and left that commit with a cancelled check instead of a result. Pull request runs still cancel, which is the case that saves runner time. For `workflow_call`, `github.event_name` is the caller's event, so a release run is not cancelled either.
+
+**Bug Fix Context (if applicable):**
+Root cause: an unconditional `cancel-in-progress: true` on a workflow with `push` and `workflow_call` triggers. Fix: cancel only when the triggering event is a pull request.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 15
+- Issue: GH-15
+
 ## [2026-11-01 13:38] Commit Summary
 
 **Change Type:** Feature
