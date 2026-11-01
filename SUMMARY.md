@@ -2,6 +2,23 @@
 
 ## [2026-11-01 14:21] Commit Summary
 
+**Change Type:** Docs
+**Scope:** AGENTS.md, CLAUDE.md, CONTRIBUTING.md
+
+**Summary:**
+Brought the project docs in line with the state this PR creates. `AGENTS.md`: the overview no longer says no code has landed, the `.github/` line no longer says "no CI yet", the commands section no longer says "No scaffold yet" or tells agents to validate with `git diff --check`, and the ruleset and CI notes now say CI exists and that the `ci-gate` check is required in a follow-up chore PR. `CLAUDE.md`: "Implementation has not started" now says the Task 1 scaffold and Task 1b CI have landed. `CONTRIBUTING.md`: CI is described as running on Linux (x86_64 and aarch64), macOS and Windows, and the required-check sentence names `ci-gate`.
+
+**Rationale:**
+Review found these statements contradicted the merged state, and the global rule is that documentation is updated with the change. `AGENTS.md` line 81 was the most harmful: it told agents to skip the real gates. Two further stale spots with the same cause (`AGENTS.md` line 76 and `CONTRIBUTING.md` line 53) were fixed too. Left alone on purpose: the `feature/lectr-v1` references in `AGENTS.md`, `CLAUDE.md` and the `/story` and `/wave` skills, which belong to the branching change and will be rewired in their own chore PR.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1 and 1b)
+- Review: PR #37 thread on ci.yml line 1
+- Issue: GH-14, GH-15
+
+## [2026-11-01 14:21] Commit Summary
+
 **Change Type:** Fix
 **Scope:** tests
 

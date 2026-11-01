@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-lectr: a CLI that turns DRM-free EPUB/PDF/MOBI/AZW3/TXT/Markdown books into chaptered `.m4b` (or per-chapter `.mp3`) audiobooks using the local Kokoro-82M model via `kokoro-onnx`. Python 3.13, uv-only, GPL-3.0. **Design-first: no code has landed. The docs are the product until v1 Task 1 executes.**
+lectr: a CLI that turns DRM-free EPUB/PDF/MOBI/AZW3/TXT/Markdown books into chaptered `.m4b` (or per-chapter `.mp3`) audiobooks using the local Kokoro-82M model via `kokoro-onnx`. Python 3.13, uv-only, GPL-3.0. **Design-first: the Task 1 scaffold and Task 1b CI have landed; readers, synthesis and the real CLI (Task 2 onward) have not. The docs stay the source of truth.**
 
 ## STRUCTURE
 
@@ -15,7 +15,7 @@ lectr/
 ├── docs/specs/      # binding designs; newer doc amends older on conflict
 ├── docs/plans/      # executable checkbox-task plans (exact code, gates)
 ├── .claude/skills/  # story + wave: the v1 agent implementation workflow
-├── .github/         # rulesets JSON, dependabot, issue/PR templates — no CI yet
+├── .github/         # workflows (ci.yml), rulesets JSON, dependabot, issue/PR templates
 ├── SUMMARY.md       # rationale log, newest first; prepend entry before every commit
 └── README.md / CONTRIBUTING.md / CLAUDE.md / AGENTS.md / LICENSE.md
 ```
@@ -73,12 +73,12 @@ Stage flow: `readers/` → `Book(...)` → `pipeline.py`+`tts.py` (one WAV per c
 
 - Plans are executed task-by-task via `/story <issue>` (one story → green PR) or `/wave <n>` (parallel Sonnet subagents, one per ready story). Story worktrees live under `lectr-worktrees/` next to the main checkout, branched from `origin/feature/lectr-v1`.
 - Gate fails mid-plan: fix the smallest thing and note it in `SUMMARY.md` — never redesign.
-- Branch/tag rules live in `.github/rulesets/*.json` so settings are reviewable and re-appliable via `gh api`; they are already applied live (PR + merge-commit enforced on `main`/`develop`; `v*` tags immutable). Required CI checks arrive with v1 Task 1b. Required approving reviews: 0 (sole maintainer cannot self-approve).
+- Branch/tag rules live in `.github/rulesets/*.json` so settings are reviewable and re-appliable via `gh api`; they are already applied live (PR + merge-commit enforced on `main`/`develop`; `v*` tags immutable). Required CI checks are not enabled yet: a chore PR adds the single `ci-gate` context once `ci.yml` is on `develop`. Required approving reviews: 0 (sole maintainer cannot self-approve).
 - Dependabot targets `develop` (security-update PRs may still target `main` — retarget by hand).
 
 ## COMMANDS
 
-No scaffold yet — documentation changes validate with `git diff --check`. Once Task 1 lands:
+The Task 1 scaffold has landed. From the repo root:
 
 ```bash
 uv sync                                   # create .venv
@@ -94,6 +94,6 @@ All four gates (pytest, ruff check, ruff format --check, mypy) must pass before 
 ## NOTES
 
 - Doc precedence: devops-design (2026-10-02) supersedes v1 plan Tasks 15/16; design spec §12 supersedes earlier spec sections; v1 plan Global Constraints bind every step.
-- CI (`.github/workflows/ci.yml`, `release.yml`) is designed (devops-design §4.2/§4.4) but absent — lands with v1 Task 1b, then required checks get added to `branches.json` and re-applied.
+- CI is `.github/workflows/ci.yml` (devops-design §4.2): a `test` matrix, `supply-chain`, and a `ci-gate` job that aggregates them. `release.yml` (§4.4) is not written yet (Task 16a). The `required_status_checks` rule (only `ci-gate`) is added to `branches.json` and re-applied in a chore PR after CI is on `develop`.
 - Parallel waves conflict on `SUMMARY.md` (every PR prepends): merge wave PRs one at a time; `/story` rebases an existing PR.
 - espeak-ng may be unnecessary if `kokoro-onnx` bundles it — confirm before release.

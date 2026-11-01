@@ -50,11 +50,11 @@ Maintain a respectful, constructive attitude in issues, reviews, and discussions
 ### 5. Pull requests
 
 - Target `develop`, and keep PRs small and self-contained.
-- Run all checks locally first (see below); once CI lands, it runs them on Linux, macOS, and Windows.
+- Run all checks locally first (see below); CI runs them on Linux (x86_64 and aarch64), macOS, and Windows.
 - Describe the change, rationale, and risks, and link related issues and ADRs.
 - Pull requests from contributors are reviewed by the maintainer before merging. GitHub
   enforces a pull request and a merge commit (no squash or rebase) on `main` and `develop`.
-  Required CI checks are added when CI lands (v1 plan Task 1b). There is no auto-merge.
+  The `ci-gate` check becomes required once the CI workflow is on `develop`. There is no auto-merge.
 
 ### 6. Documentation
 
