@@ -6,6 +6,24 @@
 **Scope:** CI
 
 **Summary:**
+Added a `ci-gate` job to `.github/workflows/ci.yml`. It `needs` `test` and `supply-chain`, runs with `if: always()`, and fails unless every needed job's result is exactly `success`. Results are passed through an `env` variable, not interpolated into the script.
+
+**Rationale:**
+Branch rules matched the five check names derived from the matrix labels (`test (ubuntu-latest)` and so on). Renaming the job, changing an `os` label or adding a matrix axis would leave every pull request waiting on a context that never reports, fixable only by a manual ruleset PUT. A single stable `ci-gate` context removes that coupling. `if: always()` is needed because a job whose needs failed is skipped, and a skipped required check counts as passing; the explicit `success` comparison also catches `skipped` and `cancelled`. The loop was run locally against `success success`, `success failure`, `success skipped` and `cancelled success`; only the first exits 0. Alternative considered: keep the five contexts and document the risk (what the PR body did); rejected because the failure mode is a stuck repository. This deviates from the five contexts named in the DevOps spec section 4.2; the spec and plan are updated in a later commit on this branch. Requiring the context is a separate step after this branch merges.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 22
+- Issue: GH-15
+
+## [2026-11-01 14:19] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
 Added a `Verify ffmpeg and ffprobe are on PATH` step to the `test` job in `.github/workflows/ci.yml`. It runs `ffmpeg -version && ffprobe -version` under `shell: bash` right after the three per-OS install steps and before `uv sync`.
 
 **Rationale:**
