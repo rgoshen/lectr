@@ -1,5 +1,21 @@
 # Summary
 
+## [2026-11-01 12:33] Commit Summary
+
+**Change Type:** Feature
+**Scope:** tests
+
+**Summary:**
+Added `tests/test_errors.py` (the verbatim `DRM_MESSAGE`, `LectrError` deriving from `Exception`, and the four specific errors deriving from `LectrError`) and a `main([])` returns-zero test in `tests/test_cli.py`. No production code changed.
+
+**Rationale:**
+Review found `uv run pytest --cov=lectr` at 61%, below the 80% `fail_under` gate: `errors.py` was never imported by a test and the `return 0` in `cli.main` was never reached, so the first CI run would have gone red. The plan says to cover a task's own code rather than lower the gate. Coverage is now 100% (18 statements, 0 missed). The `DRM_MESSAGE` test also guards the constant that must stay verbatim.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
 ## [2026-11-01 12:26] Commit Summary
 
 **Change Type:** Feature
