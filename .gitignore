@@ -295,3 +295,13 @@ tmbootpicker.efi
 .serena/
 .superpowers/
 *.rtf
+
+# Mission Control Recall (code graph MCP) — machine-specific, do not commit
+.mcp.json
+
+# Mission Control skills provisioned at session start (story and wave stay tracked)
+.claude/skills/diagram/
+.claude/skills/recall/
+
+# Per-session run-continuation state
+.omo/

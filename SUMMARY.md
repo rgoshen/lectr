@@ -1,5 +1,20 @@
 # Summary
 
+## [2026-11-01 12:18] Commit Summary
+
+**Change Type:** Docs
+**Scope:** .gitignore, local tool state
+
+**Summary:**
+Ignore `.mcp.json`, the Mission Control `diagram` and `recall` skills, and `.omo/`. These showed up as uncommitted changes in every session.
+
+**Rationale:**
+The `diagram` and `recall` skills and the `.mcp.json` ignore line are written by Mission Control at the start of each session (file times matched the session start), and they need `MC_API_URL` and `MC_API_TOKEN`, which only exist inside Mission Control. `.omo/` holds per-session run-continuation JSON from an Oct 12 session. None of it is project content. The project skills `story` and `wave` stay tracked because they are the v1 workflow. Alternative considered: commit the two Mission Control skills for other contributors; rejected because they cannot run outside Mission Control.
+
+**References:**
+- TODO.md: none (repo hygiene)
+- Issue: none
+
 ## [2026-10-02 20:13] Commit Summary
 
 **Change Type:** Docs
