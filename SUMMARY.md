@@ -3,6 +3,23 @@
 ## [2026-11-01 14:20] Commit Summary
 
 **Change Type:** Fix
+**Scope:** dependencies and CI tooling
+
+**Summary:**
+Bumped the dev tool pins in `pyproject.toml` to their latest releases and re-locked: pytest 9.1.1 to 9.2.0, ruff 0.16.9 to 0.17.3, mypy 2.3.1 to 2.4.1, types-PyYAML 6.0.12.20260906 to 6.0.12.20261030 (pytest-cov 7.1.0 is already current). In `.github/workflows/ci.yml`, `astral-sh/setup-uv` moves from v10.2.0 to v10.3.3 (commit `68559e99cc807c1eb7e9238fd43a15bba460eec2`, both uses) and `zizmor` from 1.30.1 to 1.31.1. `uv.lock` changes only those four packages.
+
+**Rationale:**
+The project rule is that every component is pinned to its latest release. These pins were a month old and behind on the day this PR was reviewed. Sources: ruff https://pypi.org/project/ruff/, mypy https://pypi.org/project/mypy/, pytest https://pypi.org/project/pytest/, types-PyYAML https://pypi.org/project/types-PyYAML/, zizmor https://pypi.org/project/zizmor/, setup-uv https://github.com/astral-sh/setup-uv/releases/tag/v10.3.3 (the tag is a commit tag; checked with the GitHub API). `actions/checkout` v7.0.1, `pip-audit` 2.10.1 and `pip-licenses` 5.5.5 were checked and are already the latest. Verified after the bump: pytest 8 passed with 100% coverage, ruff check, ruff format --check and mypy src clean, zizmor 1.31.1 reports no findings, pip-audit reports no known vulnerabilities. No code changes were needed. The plan and spec copies of these pins are synced in a later commit on this branch.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1 and 1b)
+- Review: PR #37 threads on pyproject.toml line 37 and ci.yml
+- Issue: GH-14, GH-15
+
+## [2026-11-01 14:20] Commit Summary
+
+**Change Type:** Fix
 **Scope:** repository settings
 
 **Summary:**
