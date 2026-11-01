@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  pull_request:
+  # Not main: release.yml calls this workflow on every merge to main [R2].
+  push:
+    branches: [develop]
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false  # one OS failing must not hide the others [R21]
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - name: Install ffmpeg (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install ffmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ffmpeg
+      - name: Install ffmpeg (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ffmpeg -y --no-progress
+      - run: uv sync --locked
+      - run: uv run ruff check
+      - run: uv run ruff format --check
+      - run: uv run mypy src
+      - run: uv run pytest --cov=lectr --cov-report=term-missing
+
+  supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - name: Known vulnerabilities (runtime dependencies)
+        run: |
+          uv export --no-dev --no-emit-project --locked --format requirements-txt \
+            --output-file "$RUNNER_TEMP/requirements.txt"
+          uvx pip-audit==2.10.1 -r "$RUNNER_TEMP/requirements.txt" --require-hashes --disable-pip
+      - name: GPL-3.0-compatible licenses (runtime dependencies)
+        # kokoro-onnx ships an MIT LICENSE file but no license metadata; espeakng-loader has no
+        # metadata and bundles GPL-3.0-or-later espeak-ng. Both were reviewed by hand.
+        run: |
+          uv sync --locked --no-dev
+          uvx pip-licenses==5.5.5 --python .venv/bin/python \
+            --ignore-packages espeakng-loader kokoro-onnx \
+            --allow-only "MIT;MIT License;MIT-0;BSD License;BSD-3-Clause;3-Clause BSD License;Apache Software License;Apache-2.0 OR BSD-3-Clause;Apache-2.0 OR BSD-2-Clause;BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0;GPL-3.0-only;GNU General Public License v3 or later (GPLv3+);Python Software Foundation License;PSF-2.0"
+      - name: Workflow security lint
+        run: uvx zizmor==1.30.1 .github/workflows

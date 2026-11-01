@@ -1,5 +1,22 @@
 # Summary
 
+## [2026-11-01 13:26] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
+Added `.github/workflows/ci.yml`: a test matrix on macOS arm64, Linux x86_64 and aarch64, and Windows x86_64 with Python 3.13 and ffmpeg (ruff, format, mypy, pytest with the 80% gate), plus a supply-chain job (pip-audit, pip-licenses GPL allow-list, zizmor). Actions are pinned by SHA, and the workflow is callable from the release workflow.
+
+**Rationale:**
+Moved forward from Task 15 so every later task is checked on every supported platform as it lands. Verified locally before the commit: the workflow parses, pip-audit reports no known vulnerabilities, pip-licenses passes the allow-list, and zizmor reports no findings. The two action SHAs resolve to the tags in their version comments (v7.0.1 and v10.2.0). The pins were left as written in the plan; astral-sh/setup-uv has a newer release (v10.3.3), which Dependabot can bump.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md §4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Issue: GH-15
+
 ## [2026-11-01 13:07] Commit Summary
 
 **Change Type:** Docs
