@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 lectr is a CLI that turns DRM-free EPUB/PDF/MOBI/AZW3/TXT/Markdown books into chaptered `.m4b`
 (or per-chapter `.mp3`) audiobooks using the local Kokoro-82M model via `kokoro-onnx`.
 
-Implementation has not started. The source of truth is:
+Implementation is under way: the Task 1 scaffold and Task 1b CI have landed, and Task 2 onward is next. The source of truth is:
 
 - `docs/specs/2026-09-26-lectr-design.md` — design. **§12 "Planning verification
   results" amends earlier sections** (e.g. no system espeak-ng, no own text chunking,

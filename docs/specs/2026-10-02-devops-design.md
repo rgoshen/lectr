@@ -88,13 +88,16 @@ changes the live repo and needs the maintainer's explicit approval.
   release.yml calls this workflow on every merge to `main`, and a second copy would only repeat
   it [R2].
 - `permissions: contents: read`;
-  `concurrency: {group: ci-${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: true}`.
+  `concurrency: {group: ci-${{ github.workflow }}-${{ github.ref }}, cancel-in-progress: ${{ github.event_name == 'pull_request' }}}`,
+  so only pull request runs are superseded and a post-merge run on `develop` always finishes.
   When called, `github.workflow` is the caller's name, so a release run never shares a group
   with a standalone CI run [R2]. Every job has a timeout; every checkout `persist-credentials: false`.
 - Every action is pinned by commit SHA (§10) [R10].
 - **`test`**, matrix `os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]`,
   `fail-fast: false` so one OS failing does not hide the others [R21]: setup-uv with cache and
-  Python 3.13 → install ffmpeg (apt / brew / choco) → `uv sync --locked` → `ruff check` →
+  Python 3.13 → install ffmpeg (apt / brew / choco) → verify `ffmpeg -version && ffprobe -version`
+  (the ffmpeg tests skip when it is missing, so a failed install must fail the job) →
+  `uv sync --locked` → `ruff check` →
   `ruff format --check` → `mypy src` → `pytest --cov=lectr --cov-report=term-missing`
   (the `fail_under = 80` gate applies).
 - **`supply-chain`**, `ubuntu-latest`:
@@ -102,13 +105,21 @@ changes the live repo and needs the maintainer's explicit approval.
     to a file, then `uvx pip-audit==2.10.1 -r <file> --require-hashes --disable-pip` [R3].
   - Licenses: `uv sync --locked --no-dev`, then `uvx pip-licenses==5.5.5` against the project
     interpreter with `--allow-only` set to the exact strings for §6's list.
-  - Workflows: `uvx zizmor==1.30.1 .github/workflows`; any finding fails the job. No token is
+  - Workflows: `uvx zizmor==1.31.1 .github/workflows`; any finding fails the job. No token is
     needed: the planning run reported no findings without one [R20].
   - Known limit: both gates see the Linux resolution only; packages gated by macOS or Windows
     markers are checked by reading the Dependabot PR [R16].
-- Final step (after the first CI run on the draft v1 PR): add the reported check names
-  (`test (<os>)` ×4 and `supply-chain`; no `ci /` prefix on PR runs) to `branches.json` as
-  required status checks and re-apply it.
+- **`ci-gate`**, `ubuntu-latest`, `needs: [test, supply-chain]`, `if: always()`: fails unless every
+  needed job's result is `success`. It is the one required check, so renaming `test` or adding a
+  matrix axis cannot leave a pull request waiting on a context that never reports. `if: always()`
+  and the explicit comparison are needed because a skipped job counts as passing.
+- Final step (after the workflow is on `develop`, in a small `chore/` PR): add `ci-gate` to
+  `branches.json` as the required status check and re-apply it. A required context must be present
+  on the commit, so a pull request whose head and base both lack the workflow can never report
+  it; applying the rule earlier would leave such a PR (a Dependabot PR, for example) stuck. Pin
+  none of the server-filled defaults (`do_not_enforce_on_create`,
+  `require_extra_approval_for_unattributed_changes`, `required_reviewers`); before a PUT, compare
+  the file with the live ruleset on the keys the file sets.
 
 ### 4.3 Versioning (`[tool.semantic_release]` in `pyproject.toml`)
 

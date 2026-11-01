@@ -1,5 +1,247 @@
 # Summary
 
+## [2026-11-01 14:23] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan Tasks 1 and 1b, devops-design spec section 4.2
+
+**Summary:**
+Synced the plan and spec with the files on this branch. Plan: the dev-dependency pins in Global Constraints and the Task 1 `pyproject.toml` block; the Task 1b `ci.yml` block (conditional `cancel-in-progress`, the ffmpeg verification step, the `ci-gate` job, setup-uv v10.3.3, zizmor 1.31.1); the same setup-uv and zizmor pins in the Task 16 `release.yml` blocks; the Task 1b interface and Step 5 expectation (`ci-gate`); and Step 6, which now says to require only `ci-gate` in a small chore PR after the workflow is on `develop`, with no server-filled defaults pinned. Spec section 4.2: conditional concurrency, the ffmpeg verification, `ci-gate`, zizmor 1.31.1, and the same corrected final step. The extracted plan YAML is identical to `ci.yml`, and the plan's Task 1 TOML block is identical to `pyproject.toml`.
+
+**Rationale:**
+A re-run of the plan would otherwise reintroduce the old pins, the always-cancelling concurrency, the missing ffmpeg check and a Step 6 that hangs pull requests lacking the workflow; commit 7523647 set the precedent of keeping plan blocks equal to the committed files. The historical research table in the spec (section 3, "Latest: ... setup-uv v10.2.0") is a dated record of what was true on 2026-10-02 and was left as written. The Task 16 pins were updated so that block does not paste older versions when it is executed.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1, 1b and 16)
+- Review: PR #37 threads on ci.yml and branches.json
+- Issue: GH-14, GH-15
+
+## [2026-11-01 14:21] Commit Summary
+
+**Change Type:** Docs
+**Scope:** AGENTS.md, CLAUDE.md, CONTRIBUTING.md
+
+**Summary:**
+Brought the project docs in line with the state this PR creates. `AGENTS.md`: the overview no longer says no code has landed, the `.github/` line no longer says "no CI yet", the commands section no longer says "No scaffold yet" or tells agents to validate with `git diff --check`, and the ruleset and CI notes now say CI exists and that the `ci-gate` check is required in a follow-up chore PR. `CLAUDE.md`: "Implementation has not started" now says the Task 1 scaffold and Task 1b CI have landed. `CONTRIBUTING.md`: CI is described as running on Linux (x86_64 and aarch64), macOS and Windows, and the required-check sentence names `ci-gate`.
+
+**Rationale:**
+Review found these statements contradicted the merged state, and the global rule is that documentation is updated with the change. `AGENTS.md` line 81 was the most harmful: it told agents to skip the real gates. Two further stale spots with the same cause (`AGENTS.md` line 76 and `CONTRIBUTING.md` line 53) were fixed too. Left alone on purpose: the `feature/lectr-v1` references in `AGENTS.md`, `CLAUDE.md` and the `/story` and `/wave` skills, which belong to the branching change and will be rewired in their own chore PR.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1 and 1b)
+- Review: PR #37 thread on ci.yml line 1
+- Issue: GH-14, GH-15
+
+## [2026-11-01 14:21] Commit Summary
+
+**Change Type:** Fix
+**Scope:** tests
+
+**Summary:**
+Added `test_version_matches_pyproject` to `tests/test_cli.py`. It reads `[project].version` from `pyproject.toml` with `tomllib` (path built from `__file__`, so it does not depend on the working directory) and asserts it equals `lectr.__version__`.
+
+**Rationale:**
+The existing version test compares the `--version` output with the same `__version__` the CLI prints, so it checks wiring but cannot fail if the installed metadata and `pyproject.toml` disagree, for example after a semantic-release bump without a re-sync. The new test pins `pyproject.toml` as the single source of truth. Red/green: with the real files it passes; with `pyproject.toml` temporarily set to 0.9.9 and pytest run through `.venv/bin/python` (no re-sync) it fails with `assert '0.1.0' == '0.9.9'`; the file was then restored. Under `uv run` the project is re-synced automatically, so the test mostly guards other entry points and stale environments, which is cheap. Alternative considered: keep only the wiring test; rejected as tautological for the value.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Review: PR #37 thread on tests/test_cli.py line 11
+- Issue: GH-14
+
+## [2026-11-01 14:20] Commit Summary
+
+**Change Type:** Fix
+**Scope:** dependencies and CI tooling
+
+**Summary:**
+Bumped the dev tool pins in `pyproject.toml` to their latest releases and re-locked: pytest 9.1.1 to 9.2.0, ruff 0.16.9 to 0.17.3, mypy 2.3.1 to 2.4.1, types-PyYAML 6.0.12.20260906 to 6.0.12.20261030 (pytest-cov 7.1.0 is already current). In `.github/workflows/ci.yml`, `astral-sh/setup-uv` moves from v10.2.0 to v10.3.3 (commit `68559e99cc807c1eb7e9238fd43a15bba460eec2`, both uses) and `zizmor` from 1.30.1 to 1.31.1. `uv.lock` changes only those four packages.
+
+**Rationale:**
+The project rule is that every component is pinned to its latest release. These pins were a month old and behind on the day this PR was reviewed. Sources: ruff https://pypi.org/project/ruff/, mypy https://pypi.org/project/mypy/, pytest https://pypi.org/project/pytest/, types-PyYAML https://pypi.org/project/types-PyYAML/, zizmor https://pypi.org/project/zizmor/, setup-uv https://github.com/astral-sh/setup-uv/releases/tag/v10.3.3 (the tag is a commit tag; checked with the GitHub API). `actions/checkout` v7.0.1, `pip-audit` 2.10.1 and `pip-licenses` 5.5.5 were checked and are already the latest. Verified after the bump: pytest 8 passed with 100% coverage, ruff check, ruff format --check and mypy src clean, zizmor 1.31.1 reports no findings, pip-audit reports no known vulnerabilities. No code changes were needed. The plan and spec copies of these pins are synced in a later commit on this branch.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Tasks 1 and 1b)
+- Review: PR #37 threads on pyproject.toml line 37 and ci.yml
+- Issue: GH-14, GH-15
+
+## [2026-11-01 14:20] Commit Summary
+
+**Change Type:** Fix
+**Scope:** repository settings
+
+**Summary:**
+Reverted `.github/rulesets/branches.json` to its content on `develop` (pull request, non_fast_forward and deletion rules; no `required_status_checks`) and re-applied it to the live `protect-main-develop` ruleset with `gh api --method PUT`. The previous commit on this branch that added the five required checks and pinned two server-filled `pull_request` fields is undone in the file; this PR no longer changes `branches.json`.
+
+**Rationale:**
+Two review findings. First, the required checks were applied before `ci.yml` exists on `develop`: a required context must be present on the commit, and a pull request whose head and base both lack the workflow can never report it, so any other PR into `develop` (for example a Dependabot PR) would hang. Second, the file was not a faithful copy of live state: it pinned two server defaults but omitted `do_not_enforce_on_create`, and GitHub documents `require_extra_approval_for_unattributed_changes` as applying only when Copilot opens a pull request with a non-zero approval count, so it is inert at `required_approving_review_count: 0` (https://docs.github.com/en/rest/repos/rules). Pinning none of the server defaults is consistent. Verified: before the PUT, live differed from the file only by the `required_status_checks` rule and the two fields; after the PUT, the live rule types are the original three, the `pull_request` parameters are identical to before (the server re-fills the two fields), and `bypass_actors` is still empty. Required checks come back in a follow-up chore PR after this one merges, requiring the single `ci-gate` context; that PUT will be asked about first. Until then pull requests into `develop` and `main` are not gated by CI. Rollback: apply the earlier version of this file with the same PUT.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b, Step 6)
+- Review: PR #37 threads on branches.json lines 25 and 18
+- Issue: GH-15
+
+## [2026-11-01 14:19] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
+Added a `ci-gate` job to `.github/workflows/ci.yml`. It `needs` `test` and `supply-chain`, runs with `if: always()`, and fails unless every needed job's result is exactly `success`. Results are passed through an `env` variable, not interpolated into the script.
+
+**Rationale:**
+Branch rules matched the five check names derived from the matrix labels (`test (ubuntu-latest)` and so on). Renaming the job, changing an `os` label or adding a matrix axis would leave every pull request waiting on a context that never reports, fixable only by a manual ruleset PUT. A single stable `ci-gate` context removes that coupling. `if: always()` is needed because a job whose needs failed is skipped, and a skipped required check counts as passing; the explicit `success` comparison also catches `skipped` and `cancelled`. The loop was run locally against `success success`, `success failure`, `success skipped` and `cancelled success`; only the first exits 0. Alternative considered: keep the five contexts and document the risk (what the PR body did); rejected because the failure mode is a stuck repository. This deviates from the five contexts named in the DevOps spec section 4.2; the spec and plan are updated in a later commit on this branch. Requiring the context is a separate step after this branch merges.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 22
+- Issue: GH-15
+
+## [2026-11-01 14:19] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
+Added a `Verify ffmpeg and ffprobe are on PATH` step to the `test` job in `.github/workflows/ci.yml`. It runs `ffmpeg -version && ffprobe -version` under `shell: bash` right after the three per-OS install steps and before `uv sync`.
+
+**Rationale:**
+The ffmpeg-dependent tests use `@requires_ffmpeg`, which skips when ffmpeg is absent. If an `apt`, `brew` or `choco` install or its PATH setup failed quietly, that OS's job would stay green with every ffmpeg test skipped, which defeats the four-platform matrix. Failing the job at the install is the earliest and clearest signal. `shell: bash` makes the `&&` behave the same on the Windows runner (Git Bash). Alternative considered: failing the run on any skip with `pytest -rs` parsing; rejected as heavier and noisier. No ffmpeg test exists yet, so this guards the install steps that already exist. This was deferred as a minor finding in the Task 1b review and is now picked up from the PR review.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 41
+- Issue: GH-15
+
+## [2026-11-01 14:18] Commit Summary
+
+**Change Type:** Fix
+**Scope:** CI
+
+**Summary:**
+`cancel-in-progress` in `.github/workflows/ci.yml` is now `${{ github.event_name == 'pull_request' }}` instead of `true`, so only pull request runs are superseded by a newer push.
+
+**Rationale:**
+The concurrency group is shared by every trigger. With `true`, two quick merges to `develop` cancelled the first merge commit's post-merge run and left that commit with a cancelled check instead of a result. Pull request runs still cancel, which is the case that saves runner time. For `workflow_call`, `github.event_name` is the caller's event, so a release run is not cancelled either.
+
+**Bug Fix Context (if applicable):**
+Root cause: an unconditional `cancel-in-progress: true` on a workflow with `push` and `workflow_call` triggers. Fix: cancel only when the triggering event is a pull request.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Review: PR #37 thread on ci.yml line 15
+- Issue: GH-15
+
+## [2026-11-01 13:38] Commit Summary
+
+**Change Type:** Feature
+**Scope:** repository settings
+
+**Summary:**
+The five CI checks (`test (ubuntu-latest)`, `test (ubuntu-24.04-arm)`, `test (macos-latest)`, `test (windows-latest)`, `supply-chain`) are now required on `main` and `develop`. `.github/rulesets/branches.json` gains a `required_status_checks` rule (integration 15368, the GitHub Actions app, `strict_required_status_checks_policy: false`) and was re-applied to the live `protect-main-develop` ruleset with `gh api --method PUT`. The file also pins two `pull_request` fields that GitHub had filled in server-side: `require_extra_approval_for_unattributed_changes: true` and `required_reviewers: []`.
+
+**Rationale:**
+The check names exist only after the first CI run, which was green on all five jobs on PR #36. A PUT replaces the whole ruleset and the plan's literal JSON omitted those two fields, so pinning them keeps the PUT to exactly one change. That pinning is the only departure from plan Step 6. Before the PUT the file was diffed against the live ruleset (only the new rule differed) and the five contexts were matched against the real check names; afterwards the live ruleset was re-read and its `pull_request` parameters were unchanged. No bypass actors are configured, so a failing check blocks merges to `main` and `develop` for everyone, hotfixes included. Rollback: re-apply `branches.json` without the `required_status_checks` rule. GitHub also defaults `do_not_enforce_on_create: false` inside the new rule; it is not pinned in the file.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md §4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b, Step 6)
+- Issue: GH-15
+
+## [2026-11-01 13:26] Commit Summary
+
+**Change Type:** Feature
+**Scope:** CI
+
+**Summary:**
+Added `.github/workflows/ci.yml`: a test matrix on macOS arm64, Linux x86_64 and aarch64, and Windows x86_64 with Python 3.13 and ffmpeg (ruff, format, mypy, pytest with the 80% gate), plus a supply-chain job (pip-audit, pip-licenses GPL allow-list, zizmor). Actions are pinned by SHA, and the workflow is callable from the release workflow.
+
+**Rationale:**
+Moved forward from Task 15 so every later task is checked on every supported platform as it lands. Verified locally before the commit: the workflow parses, pip-audit reports no known vulnerabilities, pip-licenses passes the allow-list, and zizmor reports no findings. The two action SHAs resolve to the tags in their version comments (v7.0.1 and v10.2.0). The pins were left as written in the plan; astral-sh/setup-uv has a newer release (v10.3.3), which Dependabot can bump.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md §4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b)
+- Issue: GH-15
+
+## [2026-11-01 13:07] Commit Summary
+
+**Change Type:** Docs
+**Scope:** v1 plan Task 1
+
+**Summary:**
+Synced the Task 1 Step 2 `pyproject.toml` block in `docs/plans/2026-09-26-lectr-v1.md` with the committed file: the `uv_build` pin is now `>=0.13.6,<0.14`, and `[tool.ruff]` gains the `extend-exclude = ["*.md"]` setting with its comment. The block is now identical to `pyproject.toml`. No other part of the plan changed.
+
+**Rationale:**
+A re-run of Task 1 from the plan would otherwise reintroduce the `uv_build` sync warning and the `ruff format --check` failure on the Markdown docs. The repo was searched for other mentions of the old pin; the only other hits (`uv_build` named without a version in the plan overview and the design spec) do not refer to the pin and were left alone.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
+## [2026-11-01 13:06] Commit Summary
+
+**Change Type:** Fix
+**Scope:** build backend
+
+**Summary:**
+Bumped the build-system pin in `pyproject.toml` from `uv_build>=0.12.19,<0.13` to `uv_build>=0.13.6,<0.14`. Nothing else in `pyproject.toml` changed, and `uv.lock` is unchanged.
+
+**Rationale:**
+The plan's `<0.13` pin excluded the current uv-build 0.13.6, so every `uv sync` printed a "does not contain the current uv version" warning. The project pins every component to its latest release, and 0.13.6 is that release (https://pypi.org/project/uv-build/). Verified after the bump: `uv sync` is warning-free, `uv lock --check` passes, and `uv build` produces an sdist and a wheel.
+
+**Bug Fix Context (if applicable):**
+Root cause: the build-backend range stopped one minor version short of the installed uv. The new range tracks the 0.13 series.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
+## [2026-11-01 12:33] Commit Summary
+
+**Change Type:** Feature
+**Scope:** tests
+
+**Summary:**
+Added `tests/test_errors.py` (the verbatim `DRM_MESSAGE`, `LectrError` deriving from `Exception`, and the four specific errors deriving from `LectrError`) and a `main([])` returns-zero test in `tests/test_cli.py`. No production code changed.
+
+**Rationale:**
+Review found `uv run pytest --cov=lectr` at 61%, below the 80% `fail_under` gate: `errors.py` was never imported by a test and the `return 0` in `cli.main` was never reached, so the first CI run would have gone red. The plan says to cover a task's own code rather than lower the gate. Coverage is now 100% (18 statements, 0 missed). The `DRM_MESSAGE` test also guards the constant that must stay verbatim.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+- Issue: GH-14
+
+## [2026-11-01 12:26] Commit Summary
+
+**Change Type:** Feature
+**Scope:** Project scaffold
+
+**Summary:**
+uv project with `uv_build`, pinned deps, ruff/mypy/pytest and semantic-release config, error types, and `lectr --version`. Adds `TODO.md` for the v1 plan and ignores `*.partial` (half-written ffmpeg outputs).
+
+**Rationale:**
+Establishes the toolchain and GitFlow branches every later task relies on. One deviation from the plan's `pyproject.toml`: `[tool.ruff]` gains `extend-exclude = ["*.md"]`. ruff 0.16.9 formats Python code blocks inside Markdown, so `uv run ruff format --check` failed on `docs/plans/2026-09-26-lectr-v1.md` and `docs/specs/2026-09-26-lectr-design.md`, whose verbatim plan code is not ruff-formatted. Excluding Markdown keeps the gate scoped to Python files; alternatives (reformatting the plan, narrowing the gate command) would alter the binding plan or its stated gates.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+
 ## [2026-11-01 12:20] Commit Summary
 
 **Change Type:** Docs
