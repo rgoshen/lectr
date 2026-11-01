@@ -1,5 +1,23 @@
 # Summary
 
+## [2026-11-01 14:20] Commit Summary
+
+**Change Type:** Fix
+**Scope:** repository settings
+
+**Summary:**
+Reverted `.github/rulesets/branches.json` to its content on `develop` (pull request, non_fast_forward and deletion rules; no `required_status_checks`) and re-applied it to the live `protect-main-develop` ruleset with `gh api --method PUT`. The previous commit on this branch that added the five required checks and pinned two server-filled `pull_request` fields is undone in the file; this PR no longer changes `branches.json`.
+
+**Rationale:**
+Two review findings. First, the required checks were applied before `ci.yml` exists on `develop`: a required context must be present on the commit, and a pull request whose head and base both lack the workflow can never report it, so any other PR into `develop` (for example a Dependabot PR) would hang. Second, the file was not a faithful copy of live state: it pinned two server defaults but omitted `do_not_enforce_on_create`, and GitHub documents `require_extra_approval_for_unattributed_changes` as applying only when Copilot opens a pull request with a non-zero approval count, so it is inert at `required_approving_review_count: 0` (https://docs.github.com/en/rest/repos/rules). Pinning none of the server defaults is consistent. Verified: before the PUT, live differed from the file only by the `required_status_checks` rule and the two fields; after the PUT, the live rule types are the original three, the `pull_request` parameters are identical to before (the server re-fills the two fields), and `bypass_actors` is still empty. Required checks come back in a follow-up chore PR after this one merges, requiring the single `ci-gate` context; that PUT will be asked about first. Until then pull requests into `develop` and `main` are not gated by CI. Rollback: apply the earlier version of this file with the same PUT.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md section 4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b, Step 6)
+- Review: PR #37 threads on branches.json lines 25 and 18
+- Issue: GH-15
+
 ## [2026-11-01 14:19] Commit Summary
 
 **Change Type:** Feature
