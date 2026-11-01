@@ -1,5 +1,20 @@
 # Summary
 
+## [2026-11-01 12:26] Commit Summary
+
+**Change Type:** Feature
+**Scope:** Project scaffold
+
+**Summary:**
+uv project with `uv_build`, pinned deps, ruff/mypy/pytest and semantic-release config, error types, and `lectr --version`. Adds `TODO.md` for the v1 plan and ignores `*.partial` (half-written ffmpeg outputs).
+
+**Rationale:**
+Establishes the toolchain and GitFlow branches every later task relies on. One deviation from the plan's `pyproject.toml`: `[tool.ruff]` gains `extend-exclude = ["*.md"]`. ruff 0.16.9 formats Python code blocks inside Markdown, so `uv run ruff format --check` failed on `docs/plans/2026-09-26-lectr-v1.md` and `docs/specs/2026-09-26-lectr-design.md`, whose verbatim plan code is not ruff-formatted. Excluding Markdown keeps the gate scoped to Python files; alternatives (reformatting the plan, narrowing the gate command) would alter the binding plan or its stated gates.
+
+**References:**
+- TODO.md: lectr v1
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1)
+
 ## [2026-11-01 12:20] Commit Summary
 
 **Change Type:** Docs

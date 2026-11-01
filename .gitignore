@@ -305,3 +305,6 @@ tmbootpicker.efi
 
 # Per-session run-continuation state
 .omo/
+
+# lectr: half-written ffmpeg outputs
+*.partial

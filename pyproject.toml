@@ -1,0 +1,102 @@
+[project]
+name = "lectr"
+version = "0.1.0"
+description = "Turn DRM-free e-books into audiobooks with a local text-to-speech model"
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE.md"]
+authors = [{ name = "Richard Goshen" }]
+requires-python = ">=3.13,<3.14"
+classifiers = [
+    "Environment :: Console",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "kokoro-onnx>=0.6.1,<0.7",
+    "mobi==0.4.1",
+    "platformdirs>=4.12,<5",
+    "pypdf[crypto]>=6.19,<7",
+    "PyYAML>=6.0.3,<7",
+]
+
+[project.urls]
+Homepage = "https://github.com/rgoshen/lectr"
+
+[project.scripts]
+lectr = "lectr.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "ruff==0.16.9",
+    "mypy==2.3.1",
+    "types-PyYAML==6.0.12.20260906",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests"]
+addopts = "-m 'not e2e' --strict-markers"
+markers = ["e2e: runs the real Kokoro model (slow; downloads ~350 MB)"]
+
+[tool.coverage.run]
+source = ["lectr"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+# ruff 0.16 also formats Python code blocks inside Markdown; docs/ holds verbatim plan code.
+extend-exclude = ["*.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+# No python_version pin [G3]: numpy >= 2.5 (resolved for Python >= 3.12) ships stubs that
+# only parse on 3.12+, so mypy checks against the interpreter running it.
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["mobi", "mobi.*"]
+ignore_missing_imports = true
+
+[tool.uv]
+# Every supported platform must resolve, so the hash-pinned requirements.lock that the release
+# workflow exports for the Homebrew formula installs everywhere. Intel Macs are not listed: onnxruntime 1.30 has no
+# Intel Mac wheels (the last release with them is 1.23.2). [A2, V1]
+required-environments = [
+    "sys_platform == 'darwin' and platform_machine == 'arm64'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sys_platform == 'linux' and platform_machine == 'aarch64'",
+    "sys_platform == 'win32' and platform_machine == 'AMD64'",
+]
+
+# Release versioning (docs/specs/2026-10-02-devops-design.md §4.3). PSR runs on release/* and
+# hotfix/* branches only, never tags (the release workflow does), and computes the next version
+# from tags and Conventional Commits; the first release is 0.1.0.
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+tag_format = "v{version}"
+commit_message = "chore(release): v{version}"
+allow_zero_version = true
+major_on_zero = false
+# Re-lock inside the PSR run so the version bump and uv.lock land in one commit [R18].
+build_command = "uv lock --upgrade-package lectr && git add uv.lock"
+
+[tool.semantic_release.branches.release]
+match = "^(release|hotfix)/.+$"
+prerelease = false
+
+[tool.semantic_release.changelog.default_templates]
+mask_initial_release = false
