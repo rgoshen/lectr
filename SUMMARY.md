@@ -1,5 +1,22 @@
 # Summary
 
+## [2026-11-01 13:38] Commit Summary
+
+**Change Type:** Feature
+**Scope:** repository settings
+
+**Summary:**
+The five CI checks (`test (ubuntu-latest)`, `test (ubuntu-24.04-arm)`, `test (macos-latest)`, `test (windows-latest)`, `supply-chain`) are now required on `main` and `develop`. `.github/rulesets/branches.json` gains a `required_status_checks` rule (integration 15368, the GitHub Actions app, `strict_required_status_checks_policy: false`) and was re-applied to the live `protect-main-develop` ruleset with `gh api --method PUT`. The file also pins two `pull_request` fields that GitHub had filled in server-side: `require_extra_approval_for_unattributed_changes: true` and `required_reviewers: []`.
+
+**Rationale:**
+The check names exist only after the first CI run, which was green on all five jobs on PR #36. A PUT replaces the whole ruleset and the plan's literal JSON omitted those two fields, so pinning them keeps the PUT to exactly one change. That pinning is the only departure from plan Step 6. Before the PUT the file was diffed against the live ruleset (only the new rule differed) and the five contexts were matched against the real check names; afterwards the live ruleset was re-read and its `pull_request` parameters were unchanged. No bypass actors are configured, so a failing check blocks merges to `main` and `develop` for everyone, hotfixes included. Rollback: re-apply `branches.json` without the `required_status_checks` rule. GitHub also defaults `do_not_enforce_on_create: false` inside the new rule; it is not pinned in the file.
+
+**References:**
+- TODO.md: lectr v1
+- Spec: docs/specs/2026-10-02-devops-design.md §4.2
+- Plan: docs/plans/2026-09-26-lectr-v1.md (Task 1b, Step 6)
+- Issue: GH-15
+
 ## [2026-11-01 13:26] Commit Summary
 
 **Change Type:** Feature

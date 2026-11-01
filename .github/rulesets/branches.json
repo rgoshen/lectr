@@ -14,10 +14,25 @@
         "require_code_owner_review": false,
         "require_last_push_approval": false,
         "required_review_thread_resolution": false,
-        "allowed_merge_methods": ["merge"]
+        "allowed_merge_methods": ["merge"],
+        "require_extra_approval_for_unattributed_changes": true,
+        "required_reviewers": []
       }
     },
     { "type": "non_fast_forward" },
-    { "type": "deletion" }
+    { "type": "deletion" },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "required_status_checks": [
+          { "context": "test (ubuntu-latest)", "integration_id": 15368 },
+          { "context": "test (ubuntu-24.04-arm)", "integration_id": 15368 },
+          { "context": "test (macos-latest)", "integration_id": 15368 },
+          { "context": "test (windows-latest)", "integration_id": 15368 },
+          { "context": "supply-chain", "integration_id": 15368 }
+        ]
+      }
+    }
   ]
 }
