@@ -1,5 +1,20 @@
 # Summary
 
+## [2026-11-01 12:20] Commit Summary
+
+**Change Type:** Docs
+**Scope:** AGENTS.md
+
+**Summary:**
+Committed the rewritten `AGENTS.md` (generated 2026-10-12 against `46db0bf`). It replaces the short "Repository Guidelines" with a project knowledge base: overview, structure, where-to-look table, planned code map, conventions, anti-patterns, commands, and notes.
+
+**Rationale:**
+The file sat uncommitted for three weeks. `develop` has not moved since it was generated, so its header (commit `46db0bf`, branch `develop`) is still accurate. All old content is covered except the PR description checklist (change, rationale, risks, linked issue, verification commands), which the pull request template already carries. Its "Required approving reviews: 0" line supersedes the old "require one peer review", matching the live ruleset.
+
+**References:**
+- TODO.md: none (docs only)
+- Issue: none
+
 ## [2026-11-01 12:18] Commit Summary
 
 **Change Type:** Docs

@@ -1,41 +1,99 @@
-# Repository Guidelines
+# PROJECT KNOWLEDGE BASE
 
-## Project Structure & Module Organization
+**Generated:** 2026-10-12
+**Commit:** 46db0bf
+**Branch:** develop
 
-`lectr` is currently design-first; implementation has not yet landed. Read `README.md` for the product overview and `CONTRIBUTING.md` for the human workflow. The binding technical sources are `docs/specs/2026-09-26-lectr-design.md` and `docs/plans/2026-09-26-lectr-v1.md`.
+## OVERVIEW
 
-The planned Python package lives in `src/lectr/`. Keep format-specific parsing in `src/lectr/readers/`, orchestration in `pipeline.py`, synthesis in `tts.py`, and encoding in `audio.py`. Mirror modules with `tests/test_<module>.py`; place generated or freely licensed samples in `tests/fixtures/`. Record significant decisions in `docs/adr/`.
+lectr: a CLI that turns DRM-free EPUB/PDF/MOBI/AZW3/TXT/Markdown books into chaptered `.m4b` (or per-chapter `.mp3`) audiobooks using the local Kokoro-82M model via `kokoro-onnx`. Python 3.13, uv-only, GPL-3.0. **Design-first: no code has landed. The docs are the product until v1 Task 1 executes.**
 
-## Build, Test, and Development Commands
+## STRUCTURE
 
-Use `uv` exclusively for Python and dependency management. Once the scaffold exists:
-
-```bash
-uv sync                                   # create the environment
-uv run lectr --help                       # run the CLI from source
-uv run pytest --cov=lectr                 # tests and 80% coverage gate
-uv run ruff check                         # lint
-uv run ruff format --check                # verify formatting
-uv run mypy src                           # strict type checking
-uv run pytest -m e2e                      # real model; slow and opt-in
+```
+lectr/
+├── docs/specs/      # binding designs; newer doc amends older on conflict
+├── docs/plans/      # executable checkbox-task plans (exact code, gates)
+├── .claude/skills/  # story + wave: the v1 agent implementation workflow
+├── .github/         # rulesets JSON, dependabot, issue/PR templates — no CI yet
+├── SUMMARY.md       # rationale log, newest first; prepend entry before every commit
+└── README.md / CONTRIBUTING.md / CLAUDE.md / AGENTS.md / LICENSE.md
 ```
 
-Before the scaffold lands, use `git diff --check` to validate documentation changes.
+## WHERE TO LOOK
 
-## Coding Style & Naming Conventions
+| Task | Location | Notes |
+|------|----------|-------|
+| Product + architecture design | `docs/specs/2026-09-26-lectr-design.md` | §12 "Planning verification results" amends earlier sections |
+| DevOps design (CI, release, versioning) | `docs/specs/2026-10-02-devops-design.md` | Amends v1 plan Tasks 15/16; wins on conflict |
+| v1 implementation plan | `docs/plans/2026-09-26-lectr-v1.md` | 16 TDD tasks with exact code; Global Constraints are binding |
+| Repo guardrails plan | `docs/plans/2026-10-02-repo-guardrails.md` | Rulesets + hygiene files; executed via PR #6 |
+| Implement one v1 story | `.claude/skills/story/SKILL.md` | One GitHub Project 5 issue → green PR into `feature/lectr-v1` |
+| Run parallel stories | `.claude/skills/wave/SKILL.md` | One subagent per ready story; merge PRs one at a time |
+| Why any change was made | `SUMMARY.md` | Rationale log; the commit discipline lives here |
+| Apply / re-apply repo settings | `CONTRIBUTING.md` "Repository settings" | `gh api` ruleset commands; maintainer approval required |
+| ADRs | `docs/adr/` | Referenced by README/AGENTS; not yet created |
 
-Target Python 3.13 with four-space indentation and complete type annotations. Use `snake_case` for modules, functions, and variables; `PascalCase` for classes; and `UPPER_SNAKE_CASE` for constants. Ruff owns formatting and import order; mypy runs in strict mode. Prefer small, single-purpose functions and existing standard-library features. Add dependencies with `uv add` or `uv add --dev`, then commit `uv.lock`.
+## CODE MAP
 
-## Testing Guidelines
+No code exists; reference centrality unmeasured. Planned entry points — create these, don't invent alternatives:
 
-Follow red, green, refactor: write a failing pytest test before implementation. Name tests `test_<observable_behavior>`. Unit tests must avoid the network and Kokoro model; use fake TTS and generated fixtures. Mark ffmpeg-dependent coverage with `@requires_ffmpeg`. Keep changed-code coverage at or above 80%; reserve `e2e` for the critical real-model workflow.
+| Symbol | Type | Location (planned) | Role |
+|--------|------|--------------------|------|
+| `lectr.cli:main(argv) -> int` | CLI entry | `src/lectr/cli.py` | `[project.scripts]` console script |
+| `lectr.__version__` | constant | `src/lectr/__init__.py` | package version |
+| `_READERS` | dispatch table | `src/lectr/readers/__init__.py` | lowercase extension → reader; shared cleanup after |
+| `KokoroSynthesizer` | class | `src/lectr/tts.py` | the only code that needs the real model |
 
-## Commit & Pull Request Guidelines
+Stage flow: `readers/` → `Book(...)` → `pipeline.py`+`tts.py` (one WAV per chapter, cached) → `audio.py` (ffmpeg → `.m4b` parts / `.mp3`).
 
-Branch from `develop` using `feature/<topic>` or `bugfix/<topic>`; use `release/*` and `hotfix/*` only for release work. Follow Conventional Commits, for example `feat(readers): parse EPUB3 nav titles`. Keep commits atomic and passing, and prepend the required rationale entry to `SUMMARY.md` before each commit.
+## CONVENTIONS
 
-Target pull requests at `develop`. Include the change, rationale, risks, linked issue or ADR, and verification commands. Include CLI output for user-facing behavior changes. Require one peer review; do not self-approve, auto-merge, or add AI/co-author trailers.
+- uv only — never pip in code, docs, or workflows. Sole exception: `uv pip` inside the Homebrew formula.
+- Python `>=3.13,<3.14` (kokoro-onnx 0.6.1 declares `<3.14`). Platforms: macOS arm64 14+, Linux x86_64/aarch64, Windows x86_64. Intel Macs unsupported (no onnxruntime wheels).
+- All tool config in one `pyproject.toml` (planned): Ruff line-length 100, rules E/F/W/I/B/UP/SIM/RUF; mypy `--strict` (missing-import ignored for `mobi` only); pytest `testpaths=["tests"]`, `pythonpath=["tests"]`, `addopts = "-m 'not e2e' --strict-markers"`; coverage branch=true, `fail_under = 80`.
+- TDD red → green → refactor. Unit tests never touch the network or the Kokoro model — fake TTS + generated fixtures. ffmpeg-dependent tests: `@requires_ffmpeg` from `tests/helpers.py` (directly importable via `pythonpath`). `e2e` marker = real model, slow, downloads ~350 MB.
+- snake_case modules/functions, PascalCase classes, UPPER_SNAKE_CASE constants, complete type annotations, four-space indent. Deps: add with `uv add [--dev]`, pinned, commit `uv.lock`.
+- GitFlow: `feature/*`, `bugfix/*`, `chore/*` branch from `develop`, merge back via PR (`gh pr create --base develop`); `release/*` and `hotfix/*` merge into `main` only, then tag and back-merge to `develop`. Merge commits only — plan steps verify ancestry with `git merge-base --is-ancestor`. Conventional Commits; prepend a `SUMMARY.md` entry before every commit.
 
-## Security & Test Data
+## ANTI-PATTERNS (THIS PROJECT)
 
-Accept only DRM-free inputs. Never commit copyrighted books, credentials, or downloaded model files. Invoke ffmpeg with argument lists, parse YAML with `yaml.safe_load`, verify model checksums, and keep dependencies GPL-3.0-compatible.
+- Never commit or attach copyrighted books, credentials, or downloaded model files.
+- DRM-protected inputs are rejected with the verbatim `DRM_MESSAGE`; DRM removal is out of scope.
+- ffmpeg/ffprobe only via `subprocess.run` with an argument list — never a shell.
+- YAML only via `yaml.safe_load`. Model downloads verify pinned SHA-256 before use.
+- A local security hook rejects any file write containing the `str.format` method call written out literally (dot, `format`, open paren) — even in docs. Use f-strings.
+- No literal en/em dashes or curly quotes in Python strings (ruff RUF001); build them with `chr(0x2013)` etc.
+- No direct commits to `main`/`develop`; no co-author or AI-generation trailers; no self-approval or auto-merge.
+- No new runtime dependencies without asking; all must be GPL-3.0-compatible (project is GPL-3.0-only because it bundles `mobi`). No silent pin-arounds of vulnerability findings.
+- Any `gh api` call that changes live repository settings (POST/PUT/PATCH): ask the maintainer and wait for an explicit yes.
+- v1 scope is fixed: no OCR, no non-English narration, no GPU/parallel synthesis, no PDF header/footer stripping, no spoken footnotes, no alternate TTS engines.
+
+## UNIQUE STYLES
+
+- Plans are executed task-by-task via `/story <issue>` (one story → green PR) or `/wave <n>` (parallel Sonnet subagents, one per ready story). Story worktrees live under `lectr-worktrees/` next to the main checkout, branched from `origin/feature/lectr-v1`.
+- Gate fails mid-plan: fix the smallest thing and note it in `SUMMARY.md` — never redesign.
+- Branch/tag rules live in `.github/rulesets/*.json` so settings are reviewable and re-appliable via `gh api`; they are already applied live (PR + merge-commit enforced on `main`/`develop`; `v*` tags immutable). Required CI checks arrive with v1 Task 1b. Required approving reviews: 0 (sole maintainer cannot self-approve).
+- Dependabot targets `develop` (security-update PRs may still target `main` — retarget by hand).
+
+## COMMANDS
+
+No scaffold yet — documentation changes validate with `git diff --check`. Once Task 1 lands:
+
+```bash
+uv sync                                   # create .venv
+uv run lectr --help                       # run the CLI from source
+uv run pytest                             # unit + integration (e2e excluded via addopts)
+uv run pytest --cov=lectr                 # coverage gate: fail_under = 80
+uv run pytest -m e2e                      # real model; slow, downloads ~350 MB
+uv run ruff check && uv run ruff format --check && uv run mypy src
+```
+
+All four gates (pytest, ruff check, ruff format --check, mypy) must pass before every commit. After adding imports: `uv run ruff check --fix && uv run ruff format`.
+
+## NOTES
+
+- Doc precedence: devops-design (2026-10-02) supersedes v1 plan Tasks 15/16; design spec §12 supersedes earlier spec sections; v1 plan Global Constraints bind every step.
+- CI (`.github/workflows/ci.yml`, `release.yml`) is designed (devops-design §4.2/§4.4) but absent — lands with v1 Task 1b, then required checks get added to `branches.json` and re-applied.
+- Parallel waves conflict on `SUMMARY.md` (every PR prepends): merge wave PRs one at a time; `/story` rebases an existing PR.
+- espeak-ng may be unnecessary if `kokoro-onnx` bundles it — confirm before release.
